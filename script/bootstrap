@@ -1,0 +1,3 @@
+#!/bin/bash
+
+test -e .env || ln -s .env.example .env

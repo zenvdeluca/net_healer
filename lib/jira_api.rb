@@ -1,0 +1,36 @@
+# Class for JIRA Integration
+require 'json'
+require 'ipaddr'
+
+class JIRA
+  def atlassian
+    jira = RestClient::Resource.new(
+      "https://#{Config::JIRA.host}",
+      user: Config::JIRA.user,
+      password: Config::JIRA.password,
+      headers: { content_type: 'application/json' },
+      verify_ssl: false
+    )
+  end
+
+  def newissue(project, summary, description, label)
+    data = '{
+     "fields": {
+       "project":
+       {
+          "key": "'"#{project}"'"
+       },
+       "summary": "'"#{summary}"'",
+       "description": "'"#{description}"'",
+       "issuetype": {
+          "name": "Story"
+       },
+       "customfield_10004": 2,
+       "labels": [ "'"#{label}"'" ]
+     }
+    }'
+    issue = atlassian['issue']
+    response = JSON.parse(issue.post data)
+    return response['key']
+  end
+end
