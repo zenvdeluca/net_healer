@@ -12,8 +12,8 @@ HEALER currently support alarm input by FastNetMon and Plixer Scrutinizer device
 <br>
 ##Available functions and examples:
 
-### /healer/v1/ddos/status => query DDoS status (clear/warning/possible DDoS)
+/healer/v1/ddos/status => query DDoS status (clear/warning/possible DDoS)
 
-### /healer/v1/ddos/verify => query current DDoS information in details
+/healer/v1/ddos/verify => query current DDoS information in details
 
-### /healer/v1/ddos/verify/brief => query current DDoS brief information
+/healer/v1/ddos/verify/brief => query current DDoS brief information
