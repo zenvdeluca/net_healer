@@ -3,18 +3,15 @@ require 'redis-namespace'
 require 'uri'
 
 class Healer
-
   redis_connection = Redis.new
   namespaced_current = Redis::Namespace.new('healer_current', redis: redis_connection)
   namespaced_history = Redis::Namespace.new('healer_history', redis: redis_connection)
 
   namespace API_URL do
-
     post "/ddos/notify" do
       begin
         payload = URI.decode(request.body.read)
         attack_info = {}
-        attack_info = {raw: payload}
         payload.each_line do |line|
           attack_info[:timestamp] = Time.now.strftime("%Y%m%d-%H%M%S")
           attack_info[:datacenter] = 'IAD1'
@@ -47,7 +44,7 @@ class Healer
       end
       timestamp = Time.now.strftime("%Y%m%d-%H%M%S")
       namespaced_current.set(timestamp, attack_info)
-      namespaced_current.expire(timestamp, Config::THRESHOLDS.expire)
+      namespaced_current.expire(timestamp, AppConfig::THRESHOLDS.expire)
       namespaced_history.set(timestamp, attack_info)
       # Call worker
       #Resque.enqueue(JobVipRequest,payload,originid)
@@ -61,10 +58,10 @@ class Healer
       pattern = Time.now.strftime("%Y") + '*'
       namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
       events = current.length
-  
+
       if events == 0
         status 200
-        body((Time.now.to_s + ' | Not under attack ! :)').to_json + "\n")
+        body({status: 'cleared', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
       else
         attacks = current.sort { |a,b| a[:ip] <=> b[:ip] }
         group_attacks = attacks.group_by { |x| x[:ip] }
@@ -84,7 +81,7 @@ class Healer
       pattern = Time.now.strftime("%Y") + '*'
       namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
       events = current.length
-  
+
       if events == 0
         status 200
         body({status: 'cleared', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json + "\n")
@@ -107,6 +104,7 @@ class Healer
       pattern = Time.now.strftime("%Y") + '*'
       namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
       events = current.length
+
       if events == 0
         status 200
         body({status: 'cleared', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json + "\n")
@@ -120,9 +118,9 @@ class Healer
         end
         warning = []
         ddos = []
-        brief.each do |item| 
-          warning << item if item[:amount] >= Config::THRESHOLDS.warning
-          ddos << item if item[:amount] >= Config::THRESHOLDS.possible_ddos
+        brief.each do |item|
+          warning << item if item[:amount] >= AppConfig::THRESHOLDS.warning
+          ddos << item if item[:amount] >= AppConfig::THRESHOLDS.possible_ddos
         end
         if ddos.length == 0 && warning.length != 0
           body({status: 'warning', details: warning, timestamp: Time.now.strftime("%Y%m%d-%H%M%S")}.to_json)

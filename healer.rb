@@ -5,7 +5,7 @@ require 'sinatra/json'
 require 'resque'
 require 'ipaddr'
 
-require_relative 'config'
+require_relative 'app_config'
 
 class Healer < Sinatra::Base
   API_VERSION = '1'
@@ -19,7 +19,7 @@ class Healer < Sinatra::Base
   set :allow_credentials, true
   set :max_age, '1728000'
   set :expose_headers, ['Content-Type']
-  Rack::Utils.key_space_limit = 262144 
+  Rack::Utils.key_space_limit = 262144
 
   configure do
     enable :cross_origin
