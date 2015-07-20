@@ -1,0 +1,107 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    backports (3.6.4)
+    coderay (1.1.0)
+    diff-lcs (1.2.5)
+    domain_name (0.5.24)
+      unf (>= 0.0.5, < 1.0.0)
+    dotenv (2.0.2)
+    faraday (0.9.1)
+      multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.9.1)
+      faraday (>= 0.7.4, < 0.10)
+    flowdock (0.5.0)
+      httparty (~> 0.7)
+      multi_json
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
+    httparty (0.13.3)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
+    infoblox (0.2.19)
+      faraday
+      faraday_middleware
+    ipaddress (0.8.0)
+    json (1.8.2)
+    method_source (0.8.2)
+    mime-types (2.5)
+    mono_logger (1.1.0)
+    multi_json (1.11.0)
+    multi_xml (0.5.5)
+    multipart-post (2.0.0)
+    netrc (0.10.3)
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    puma (2.11.1)
+      rack (>= 1.1, < 2.0)
+    rack (1.6.0)
+    rack-protection (1.5.3)
+      rack
+    rack-test (0.6.3)
+      rack (>= 1.0)
+    redis (3.2.1)
+    redis-namespace (1.5.2)
+      redis (~> 3.0, >= 3.0.4)
+    resque (1.25.2)
+      mono_logger (~> 1.0)
+      multi_json (~> 1.0)
+      redis-namespace (~> 1.3)
+      sinatra (>= 0.9.2)
+      vegas (~> 0.1.2)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
+    rspec (3.3.0)
+      rspec-core (~> 3.3.0)
+      rspec-expectations (~> 3.3.0)
+      rspec-mocks (~> 3.3.0)
+    rspec-core (3.3.2)
+      rspec-support (~> 3.3.0)
+    rspec-expectations (3.3.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.3.0)
+    rspec-mocks (3.3.2)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.3.0)
+    rspec-support (3.3.0)
+    sinatra (1.4.6)
+      rack (~> 1.4)
+      rack-protection (~> 1.4)
+      tilt (>= 1.3, < 3)
+    sinatra-contrib (1.4.2)
+      backports (>= 2.0)
+      multi_json
+      rack-protection
+      rack-test
+      sinatra (~> 1.4.0)
+      tilt (~> 1.3)
+    sinatra-cross_origin (0.3.2)
+    slop (3.6.0)
+    tilt (1.4.1)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
+    vegas (0.1.11)
+      rack (>= 1.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  dotenv (~> 2.0.2)
+  flowdock
+  infoblox (~> 0.2.18)
+  ipaddress
+  pry (~> 0.10.1)
+  puma
+  rack-test (~> 0.6.3)
+  resque
+  rest-client
+  rspec (~> 3.3.0)
+  sinatra
+  sinatra-contrib
+  sinatra-cross_origin

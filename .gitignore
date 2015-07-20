@@ -1,3 +1,4 @@
 .env
 puma.pid
 log/
+*.swp
