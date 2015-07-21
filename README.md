@@ -1,7 +1,7 @@
-# NE(a)T HEALER 
-###centralizes DDoS alarms from multiple colletors, and take decisions based on thresholds.
+# NET HEALER 
+###centralizes DDoS alarms from multiple collectors, taking different stages decisions based on configured thresholds.
 
-HEALER listens to FastNetMon and Plixer Scrutinizer notifications.
+NET HEALER listens to FastNetMon and Plixer Scrutinizer notifications.
 When alarms are received, it takes actions based on configured thresholds.
 
 Configure thresholds for different stages (cleared,warning,possible_ddos,under_attack)
@@ -10,6 +10,9 @@ Configure thresholds for different stages (cleared,warning,possible_ddos,under_a
 Setup actions for each stage (email, pagerduty, script)
 ... expand
 
+
+## Requirement
+Redis database
 
 ##Starting up
 
