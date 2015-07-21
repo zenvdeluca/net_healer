@@ -22,7 +22,9 @@ Setup actions for each stage (email, pagerduty, script)
 
 ### query
 GET /healer/v1/ddos/status => query DDoS status
+
 GET /healer/v1/ddos/verify => query DDoS alarms details
+
 GET /healer/v1/ddos/verify/brief => query DDoS alarms brief
 
 # post
