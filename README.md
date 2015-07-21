@@ -1,7 +1,10 @@
 # NE(a)T HEALER 
-###provides you a central database for handling and storing DDoS alarms, allowing you to automatically take decisions based on thresholds.
+###centralizes DDoS alarms from multiple colletors, allowing you to automatically take decisions based on thresholds.
 
-HEALER currently support alarm input by FastNetMon and Plixer Scrutinizer devices.
+HEALER currently parses FastNetMon and Plixer Scrutinizer notifications.
+
+Configure different thresholds for different stages (cleared,warning,possible_ddos,under_attack)
+Setup actions for each stage (email, pagerduty, script)
 
 ##Starting up
 
@@ -10,10 +13,12 @@ HEALER currently support alarm input by FastNetMon and Plixer Scrutinizer device
 3. `script/start`
 
 <br>
-##Available functions and examples:
+##Available functions
 
-/healer/v1/ddos/status => query DDoS status (clear/warning/possible DDoS)
+### query
+GET /healer/v1/ddos/status => query DDoS status
+GET /healer/v1/ddos/verify => query DDoS alarms details
+GET /healer/v1/ddos/verify/brief => query DDoS alarms brief
 
-/healer/v1/ddos/verify => query current DDoS information in details
-
-/healer/v1/ddos/verify/brief => query current DDoS brief information
+# post
+POST /healer/v1/ddos/notify => post FastNetMon alarm
