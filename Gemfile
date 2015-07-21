@@ -9,4 +9,10 @@ gem 'ipaddress'
 gem 'puma'
 gem 'resque'
 gem 'flowdock'
-gem 'dotenv', group: :development
+
+group :test, :development do
+  gem 'dotenv', '~> 2.0.2'
+  gem 'rack-test', '~> 0.6.3'
+  gem 'rspec', '~> 3.3.0'
+  gem 'pry', '~> 0.10.1'
+end

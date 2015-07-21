@@ -5,9 +5,9 @@ require 'ipaddr'
 class JIRA
   def atlassian
     jira = RestClient::Resource.new(
-      "https://#{Config::JIRA.host}",
-      user: Config::JIRA.user,
-      password: Config::JIRA.password,
+      "https://#{AppConfig::JIRA.host}",
+      user: AppConfig::JIRA.user,
+      password: AppConfig::JIRA.password,
       headers: { content_type: 'application/json' },
       verify_ssl: false
     )
