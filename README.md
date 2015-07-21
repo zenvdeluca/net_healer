@@ -1,7 +1,8 @@
 # NE(a)T HEALER 
 ###centralizes DDoS alarms from multiple colletors, and take decisions based on thresholds.
 
-HEALER currently parses FastNetMon and Plixer Scrutinizer notifications.
+HEALER listens to FastNetMon and Plixer Scrutinizer notifications.
+When alarms are received, it takes actions based on configured thresholds.
 
 Configure thresholds for different stages (cleared,warning,possible_ddos,under_attack)
 ... expand
