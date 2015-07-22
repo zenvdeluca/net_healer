@@ -12,9 +12,9 @@ Setup actions for each stage (email, pagerduty, script)
 
 
 ## Requirement
-Redis database
-FastNetMon is a super cool tool written by Pavel Odintsov => https://github.com/FastVPSEestiOu/fastnetmon
-Plixer scrutinizer (optional)
+- Redis database
+- FastNetMon is a super cool tool written by Pavel Odintsov => https://github.com/FastVPSEestiOu/fastnetmon
+- Plixer scrutinizer (optional)
 
 ##Starting up
 
