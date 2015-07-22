@@ -6,8 +6,37 @@ class Healer
   redis_connection = Redis.new
   namespaced_current = Redis::Namespace.new('healer_current', redis: redis_connection)
   namespaced_history = Redis::Namespace.new('healer_history', redis: redis_connection)
+  Resque.redis = Redis.new
+  Resque.redis.namespace = "resque:report"
 
   namespace API_URL do
+    post "/:report_type/report" do
+      begin
+        report_type = params["report_type"]
+        if ReportAnalyst.know? report_type
+          report_payload = URI.decode(request.body.read)
+          Resque.enqueue(ReportsAnalyst, report_type, report_payload)
+          status 202
+        else
+          status 415
+          return {
+            errors: {
+              status: "Bad request",
+              title: "Unsupported Report Type"
+            }
+          }.to_json
+        end
+      rescue
+        status 500
+        return {
+          errors: {
+            status: "Internal Error",
+            title: "Some unexpected error occurred during report processing."
+          }
+        }.to_json
+      end
+    end
+
     post "/ddos/notify" do
       begin
         payload = URI.decode(request.body.read)
