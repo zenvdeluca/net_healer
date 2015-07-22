@@ -32,5 +32,7 @@ GET /healer/v1/ddos/verify => query DDoS alarms details
 
 GET /healer/v1/ddos/verify/brief => query DDoS alarms brief
 
-# post
+# Post alarms
 POST /healer/v1/ddos/notify => post FastNetMon alarm
+
+# WORK IN PROGRESS. COLABORATE !
