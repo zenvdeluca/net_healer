@@ -2,13 +2,15 @@
 ###centralizes DDoS alarms from multiple collectors, taking different stages decisions based on configured thresholds.
 
 NET HEALER collects FastNetMon and Plixer Scrutinizer DDoS attack reports.
-It group and further analyzes for taking decisions based on pre-configured protocol thresholds.
+It groups them for further algorithms run on taking decisions. 
+i.e: trigger notification or BAN an IP based on pre-configured protocol thresholds.
+if UDP traffic for IP x.x.x.x is >= 1Gbps, than consider under_attack
 
 It works on four different stages 
-- cleared
-- warning
-- critical
-- under_attack
+- cleared - none Attack Reports received.
+- warning - A few Attack Report(s) received
+- critical - Notify and run attack classification algorithms for further inspection
+- under_attack - Notify and enable DDoS mitigation
 
 It will support actions / stage:
  - email
