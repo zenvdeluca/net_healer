@@ -18,7 +18,7 @@ class Healer
 
   namespace API_URL do
 
-    get "/ddos/current/reports/?" do
+    get "/ddos/reports/?" do
       current = []
       pattern = '*' + Time.now.strftime("%Y") + '*'
       namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
@@ -30,7 +30,7 @@ class Healer
       end
     end
 
-    get "/ddos/current/brief/?" do
+    get "/ddos/brief/?" do
       current = []
       pattern = '*' + Time.now.strftime("%Y") + '*'
       namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
