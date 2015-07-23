@@ -1,24 +1,24 @@
 # NET HEALER 
 ###centralizes DDoS alarms from multiple collectors, taking different stages decisions based on configured thresholds.
 
-NET HEALER listens to FastNetMon and Plixer Scrutinizer reports.
-When new reports are received, it analyzes them, taking actions based on pre-configured protocol thresholds.
+NET HEALER collects FastNetMon and Plixer Scrutinizer DDoS attack reports.
+It group and further analyzes for taking decisions based on pre-configured protocol thresholds.
 
 It works on four different stages 
 - cleared
 - warning
-- possible_ddos
+- critical
 - under_attack
 
-You can specify different actions for each stage
+It will support actions / stage:
  - email
  - flowdock / slack / pagerduty notifications
- - execute a script (login to routers and enable policy options)
+ - execute a script
 
 ## Requirement
 - Redis database
 - FastNetMon: a super cool tool written by Pavel Odintsov - https://github.com/FastVPSEestiOu/fastnetmon
-- Plixer scrutinizer (optional)
+- Plixer Scrutinizer (optional)
 
 ##Starting up
 
@@ -32,11 +32,8 @@ You can specify different actions for each stage
 ### query
 GET /healer/v1/ddos/status => query DDoS status
 
-GET /healer/v1/ddos/verify => query DDoS alarms details
+GET /healer/v1/ddos/reports => query DDoS alarms details
 
-GET /healer/v1/ddos/verify/brief => query DDoS alarms brief
+GET /healer/v1/ddos/brief => query DDoS alarms brief
 
-# Post alarms
-POST /healer/v1/ddos/notify => post FastNetMon alarm
-
-# WORK IN PROGRESS. COLABORATE !
+### WORK IN PROGRESS. PRs are more than welcome !
