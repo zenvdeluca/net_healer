@@ -9,6 +9,7 @@ gem 'ipaddress'
 gem 'puma'
 gem 'resque'
 gem 'flowdock'
+gem 'rufus-scheduler'
 
 group :test, :development do
   gem 'dotenv', '~> 2.0.2'

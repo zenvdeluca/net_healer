@@ -2,17 +2,28 @@ require 'pathname'
 
 module AppConfig
 
+  class REDIS
+    @server = ENV['REDIS_SERVER']
+    @port = ENV['REDIS_PORT']
+    %i[@server].each do |config_var|
+      raise "REDIS misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
+    end
+    class << self
+      attr_reader :server, :port
+    end
+  end
+
   class THRESHOLDS
-    @expire = ENV['THRESHOLD_EXPIRE'].to_i                # interval in seconds to consider a current attack notify
-    @warning = ENV['THRESHOLD_WARNING'].to_i              # amount of alerts need to trigger Warning state (per IP destination)
-    @possible_ddos = ENV['THRESHOLD_POSSIBLE_DDOS'].to_i  # amount of alerts need to trigger Possible DDoS state (per IP destination)
+    @expire = ENV['THRESHOLD_EXPIRE'].to_i                
+    @warning = ENV['THRESHOLD_WARNING'].to_i              
+    @critical = ENV['THRESHOLD_CRITICAL'].to_i 
     @action = ENV['THRESHOLD_ACTION']
 
-    %i[@expire @warning @possible_ddos @action].each do |config_var|
+    %i[@expire @warning @critical @action].each do |config_var|
       raise "THRESHOLDS misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
     end
     class << self
-      attr_reader :warning, :possible_ddos, :expire, :action
+      attr_reader :warning, :critical, :expire, :action
     end
   end
 
