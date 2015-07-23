@@ -4,7 +4,6 @@
 NET HEALER supports FastNetMon and Plixer Scrutinizer DDoS attack reports.<br>
 It groups them for further algorithms run on taking decisions. 
 <br>i.e: trigger notification or BAN an IP based on pre-configured protocol thresholds.
-<br>if UDP traffic for IP x.x.x.x is >= 1Gbps, than consider under_attack
 
 It works on four different stages 
 - cleared - none Attack Reports received.
