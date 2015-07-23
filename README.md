@@ -1,8 +1,7 @@
 # NET HEALER 
-###centralizes DDoS Attack Reports from multiple collectors
-###Analyze, classify, notify and mitigate
+###Centralizes DDoS Attack Reports from multiple collectors<br>Analyze, classify, notify and mitigate
 
-NET HEALER supports FastNetMon and Plixer Scrutinizer DDoS attack reports.
+NET HEALER supports FastNetMon and Plixer Scrutinizer DDoS attack reports.<br>
 It groups them for further algorithms run on taking decisions. 
 i.e: trigger notification or BAN an IP based on pre-configured protocol thresholds.
 if UDP traffic for IP x.x.x.x is >= 1Gbps, than consider under_attack
