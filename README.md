@@ -23,6 +23,7 @@ i.e: trigger a notification or BAN an IP based on pre-configured protocol thresh
 - Plixer Scrutinizer (optional)
 
 ##Installation
+0. FastNetMon should be configured to use Redis (https://github.com/FastVPSEestiOu/fastnetmon/blob/master/docs/REDIS.md)
 1. install ruby (https://www.ruby-lang.org/en/documentation/installation/)
 2. `$ gem install bundler`
 3. `$ bundle install`
