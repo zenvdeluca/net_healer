@@ -2,9 +2,12 @@
 
 NET HEALER centralizes DDoS Attack Reports from multiple collectors and provides tools for Analyzing, Classifying, Notifying and Mitigating DDoS Attacks.
 
-NET HEALER supports FastNetMon and Plixer Scrutinizer DDoS attack reports.<br>
-It will also group them to be used by other algorithms optimized for decision making.
-i.e: trigger a notification, BAN an IP based on pre-configured protocol thresholds, or activate cloud mitigation services.
+It supports FastNetMon and Plixer Scrutinizer DDoS attack reports.<br>
+Works grouping them to be used as input algorithms optimized for decision making.
+i.e: Target IP have traffic,pps or flow numbers >= threshold<br>
+ - after 1 minutes, enter a Warning state: Notify
+ - after 3 minutes, enter a critical state: Notify + Group all received info,packet and flow dumps and run decision algorithms
+ - based on pre-defined policies, if under_attack: Notify + BAN IP, run a script, or activate cloud mitigation services.
 
 ## NET HEALER Stages
 - cleared - no Attack Reports
