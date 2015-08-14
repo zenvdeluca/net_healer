@@ -78,7 +78,7 @@ def feed_nethealer(payloads)
 end
 
 def gc_fastnetmon_redis
-  puts "gc"
+  $count += 1
   if $count > 20
     puts "#{Time.now} - [INFO] - Running garbage collection..." if debug == 2
     gc = []
@@ -88,8 +88,8 @@ def gc_fastnetmon_redis
       puts "removing null key for #{ip}" if debug == 2
       $redis_connection.del("#{ip}_packets_dump")
     end
-  end
   $count = 0
+  end
   return true
 end
 
@@ -113,7 +113,6 @@ scheduler.every '5s' do
     puts "#{Time.now} - [INFO] - no new attack reports found - [#{nethealer_server}]" if $debug >= 2
     next
   end
-  $count += 1
   puts "#{Time.now} - [INFO] - Fetching FastNetMon detected attack reports - [#{nethealer_server}]" if $debug >= 1
   payloads_raw = fetch_fastnetmon_redis(current)
   payloads = parse_fastnetmon_redis(payloads_raw)
