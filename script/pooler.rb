@@ -80,12 +80,12 @@ end
 def gc_fastnetmon_redis
   $count += 1
   if $count > 20
-    puts "#{Time.now} - [INFO] - Running garbage collection..." if debug == 2
+    puts "#{Time.now} - [INFO] - Running garbage collection..." if $debug == 2
     gc = []
     $redis_connection.scan_each(:match => pattern) {|key| gc << key.split('_')[0] }
     pattern = '*_information'
     gc.each do |ip|
-      puts "removing null key for #{ip}" if debug == 2
+      puts "removing null key for #{ip}" if $debug == 2
       $redis_connection.del("#{ip}_packets_dump")
     end
   $count = 0
