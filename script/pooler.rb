@@ -180,7 +180,6 @@ scheduler.every '2s' do
       values: { type: "ratio", info: ratio, },
     }
   influxdb_events.write_point('ratio', data)
-  puts "wrote"
 end
 
 scheduler.join
