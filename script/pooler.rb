@@ -139,7 +139,7 @@ scheduler.every '10s' do
   when 'warning'
     print '|Warning| '
     data = {
-      values: { type: "warning", info: "10.10.10.10" },
+      values: { type: "WARNING", info: "10.10.10.10" },
     }
     influxdb.write_point('nethealer', data)
   else
