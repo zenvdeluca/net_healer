@@ -2,7 +2,6 @@ require 'sinatra'
 require 'sinatra/cross_origin'
 require 'sinatra/namespace'
 require 'sinatra/json'
-require 'resque'
 require 'ipaddr'
 
 require_relative 'app_config'

@@ -2,3 +2,4 @@
 puma.pid
 log/
 *.swp
+*.lock
