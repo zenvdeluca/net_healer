@@ -147,7 +147,7 @@ scheduler.every '5s' do
     response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
     last_data = data
     data = {
-      values: { type: "WARNING", info: info.to_s },
+      values: { type: "WARNING", info: info.to_s, series: 'nethealer'},
     }
     influxdb.write_point('nethealer', data) if data != last_data
     puts "#{data} - #{last_data}"
@@ -157,7 +157,7 @@ scheduler.every '5s' do
     response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
     last_data = data
     data = {
-      values: { type: "CRITICAL", info: info.to_s },
+      values: { type: "CRITICAL", info: info.to_s, series: 'nethealer' },
     }
     puts ""
     puts "A: #{data}"
