@@ -25,7 +25,7 @@ healer = RestClient::Resource.new(
   verify_ssl: false
 )
 
-$debug = 2
+$debug = 1
 
 def fetch_fastnetmon_redis(queue)
   payloads_raw = {}
