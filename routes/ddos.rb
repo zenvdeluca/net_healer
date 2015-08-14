@@ -3,7 +3,7 @@ require 'redis-namespace'
 require 'uri'
 
 class Healer
-  redis_server=AppConfig::REDIS.server
+  redis_server=AppConfig::NETHEALER.server
   redis_connection = Redis.new(:host => redis_server)
   namespaced_current = Redis::Namespace.new('healer_current', redis: redis_connection)
   namespaced_history = Redis::Namespace.new('healer_history', redis: redis_connection)
