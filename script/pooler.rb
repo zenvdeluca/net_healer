@@ -99,8 +99,6 @@ end
 
 $count = 18
 scheduler.every '5s' do
-  #call garbage collection function
-  gc_fastnetmon_redis
   current = []
   pattern = '*_packets_dump'
   begin
@@ -122,6 +120,9 @@ scheduler.every '5s' do
 
   #feed net healer queue
   feed_nethealer(payloads)
+  #call garbage collection function
+  gc_fastnetmon_redis
+  
 
   
   puts "#{Time.now} - [INFO] - Back to listen state."
