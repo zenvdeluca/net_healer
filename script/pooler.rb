@@ -139,15 +139,15 @@ scheduler.every '10s' do
     print '!'
   when 'warning'
     print '|Warning| '
-    target.each do |ip|
+    target.each do |ip,amount|
       data = {
-        values: { type: "WARNING", info: ip },
+        values: { type: "WARNING", info: "#{ip}" },
       }
       influxdb.write_point('nethealer', data)
     end
   else
     print '|Attack| '
-    target.each do |ip|
+    target.each do |ip,amount|
       data = {
         values: { type: "CRITICAL", info: ip },
       }
