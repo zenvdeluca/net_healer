@@ -78,6 +78,7 @@ def feed_nethealer(payloads)
 end
 
 def gc_fastnetmon_redis
+  puts "gc"
   if $count > 20
     puts "#{Time.now} - [INFO] - Running garbage collection..." if debug == 2
     gc = []
