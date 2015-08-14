@@ -131,6 +131,8 @@ end
 
 scheduler.every '30s' do
 
+  last_data = nil
+  data = ''
   response = JSON.parse(healer['ddos/status'].get)
   status = response['status']
   target = response['target']
@@ -141,20 +143,22 @@ scheduler.every '30s' do
   when 'warning'
     print '|Warning| '
     info = ''
-    response['target'].map {|k,v| info = info + "|#{k}(#{v})"}    
-      data = {
-        values: { type: "WARNING", info: info.to_s },
-      }
-      influxdb.write_point('nethealer', data)
+    response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
+    last_data = data
+    data = {
+      values: { type: "WARNING", info: info.to_s },
+    }
+    influxdb.write_point('nethealer', data) if data != last_data
   else
     print '|Attack| '
     info = ''
-    response['target'].map {|k,v| info = info + "|#{k}(#{v})"}    
-      data = {
-        values: { type: "CRITICAL", info: info.to_s },
-      }
-      influxdb.write_point('nethealer', data)
-    
+    response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
+    last_data = data
+    data = {
+      values: { type: "CRITICAL", info: info.to_s },
+    }
+    influxdb.write_point('nethealer', data) if data != last_data
+
   end
 
 end
