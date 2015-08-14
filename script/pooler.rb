@@ -144,6 +144,11 @@ scheduler.every '10s' do
     influxdb.write_point('nethealer', data)
   else
     print '.'
+    print '|Attack| '
+    data = {
+      values: { type: "CRITICAL", info: "10.10.10.10" },
+    }
+    influxdb.write_point('nethealer', data)
   end
 
 end
