@@ -160,7 +160,6 @@ scheduler.every '5s' do
     data = {
       values: { type: "CRITICAL", info: info.to_s },
     }
-    if data == last_data then puts "equal" end
     influxdb.write_point('nethealer', data) if data != last_data
 
   end
