@@ -162,10 +162,12 @@ scheduler.every '5s' do
       values: { type: "CRITICAL", info: info.to_s },
     }
     influxdb.write_point('nethealer', data) if data != last_data
-
   end
 
 end
 
+scheduler.every '2s' do
+  puts "sou bonito"
+end
 
 scheduler.join
