@@ -170,7 +170,7 @@ end
 
 scheduler.every '2s' do
   incoming = outgoing = nil
-  total = influxdb_graphite.query "select mean(value) from total where time > now() - 10s and resource = 'bps' group by direction,resource"
+  total = influxdb_graphite.query "select median(value) from total where time > now() - 10s and resource = 'bps' group by direction,resource"
   total.each do |item|
     incoming = item["values"].first["mean"] if item['tags']['direction'] == 'incoming'
     outgoing = item["values"].first["mean"] if item['tags']['direction'] == 'outgoing'
