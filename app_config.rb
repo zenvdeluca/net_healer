@@ -4,7 +4,7 @@ module AppConfig
 
   class NETHEALER
     @server = ENV['NETHEALER_SERVER']
-    @grafana = ENV['NETHEALER_INFLUXDB']
+    @influxdb = ENV['NETHEALER_INFLUXDB']
     @username = ENV['NETHEALER_USERNAME']
     @password = ENV['NETHEALER_PASSWORD']
     
