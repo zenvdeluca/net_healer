@@ -159,6 +159,7 @@ scheduler.every '5s' do
     data = {
       values: { type: "CRITICAL", info: info.to_s },
     }
+    puts ""
     puts "A: #{data}"
     puts "B: #{last_data}"
     if data == last_data then puts "equal" end
