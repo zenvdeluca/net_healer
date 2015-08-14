@@ -161,7 +161,7 @@ scheduler.every '5s' do
     }
     puts "A: #{data}"
     puts "B: #{last_data}"
-    if data == last_data then puts "equal"
+    if data == last_data then puts "equal" end
     influxdb.write_point('nethealer', data) 
 
   end
