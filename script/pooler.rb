@@ -129,10 +129,11 @@ end
 
 # Graph markdown
 
+last_data = nil
+data = ''
+  
 scheduler.every '5s' do
 
-  last_data = nil
-  data = ''
   response = JSON.parse(healer['ddos/status'].get)
   status = response['status']
   target = response['target']
