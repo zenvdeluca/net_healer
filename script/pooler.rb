@@ -142,7 +142,7 @@ scheduler.every '5s' do
   when 'clear'
     print '!'
   when 'warning'
-    print '|Warning| '
+    puts "|Warning| - #{Time.now}"
     info = ''
     response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
     last_data = data
@@ -152,7 +152,7 @@ scheduler.every '5s' do
     }
     influxdb.write_point('nethealer', data) if data != last_data
   else
-    print '|Attack| '
+    puts "|Attack| - #{Time.now}"
     info = ''
     response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
     last_data = data
