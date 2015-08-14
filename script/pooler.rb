@@ -129,7 +129,7 @@ end
 
 # Graph markdown
 
-scheduler.every '60s' do
+scheduler.every '30s' do
 
   response = JSON.parse(healer['ddos/status'].get)
   status = response['status']
