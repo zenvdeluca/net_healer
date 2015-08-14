@@ -142,7 +142,7 @@ scheduler.every '10s' do
     info = ''
     response['target'].map {|k,v| info = info + "#{k} (#{v}) | "}    
       data = {
-        values: { type: "WARNING", info: info },
+        values: { type: "WARNING", info: info.to_s },
       }
       influxdb.write_point('nethealer', data)
 
@@ -151,7 +151,7 @@ scheduler.every '10s' do
     info = ''
     response['target'].map {|k,v| info = info + "#{k} (#{v}) | "}    
       data = {
-        values: { type: "CRITICAL", info: info },
+        values: { type: "CRITICAL", info: info.to_s },
       }
       influxdb.write_point('nethealer', info)
     
