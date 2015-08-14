@@ -157,7 +157,7 @@ scheduler.every '5s' do
     info = ''
     response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
     last_data = data
-    last_data[:values].delete(:series)
+    begin last_data[:values].delete(:series) rescue puts 'ok' end
     data = {
       values: { type: "CRITICAL", info: info.to_s },
     }
