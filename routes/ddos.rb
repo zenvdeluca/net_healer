@@ -24,7 +24,7 @@ class Healer
       namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
       reports = report_initializer(current)
       unless reports
-        body({status: 'cleared', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
+        body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
       else
         body({reports: reports, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
       end
@@ -36,7 +36,7 @@ class Healer
       namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
       reports = report_initializer(current)
       unless reports
-        body({status: 'cleared', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
+        body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
       else
         summary = reports.map { |k,v| { "#{k}" => v.length } }
         brief = summary.reduce Hash.new, :merge
@@ -53,7 +53,7 @@ class Healer
       namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
       reports = report_initializer(current)
       unless reports
-        body({status: 'cleared', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
+        body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
       else
         summary = reports.map { |k,v| { "#{k}" => v.length } }
         brief = summary.reduce Hash.new, :merge
@@ -62,7 +62,7 @@ class Healer
           critical[k] = v if v >= AppConfig::THRESHOLDS.critical
         end
 
-        return body({status: 'cleared', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json) if warning.empty? && critical.empty?
+        return body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json) if warning.empty? && critical.empty?
         return body({status: 'warning', target: warning, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json) if critical.empty?
         return body({status: 'critical', target: critical, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
       end
