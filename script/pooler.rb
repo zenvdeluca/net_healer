@@ -139,22 +139,22 @@ scheduler.every '10s' do
     print '!'
   when 'warning'
     print '|Warning| '
-    info = nil
-    response['target'].map {|k,v| info = info + "#{k} - #{v}\n"}
-    data = {
-      values: { type: "WARNING", info: info },
-    }
-    influxdb.write_point('nethealer', data)
+    info = ''
+    response['target'].map {|k,v| info = info + "#{k} - #{v}\n"}    
+      data = {
+        values: { type: "WARNING", info: info },
+      }
+      influxdb.write_point('nethealer', data)
 
   else
     print '|Attack| '
-    info = nil
-    response['target'].map {|k,v| info = info + "#{k} - #{v}\n"}
-    data = {
-      values: { type: "CRITICAL", info: ip },
-    }
-    influxdb.write_point('nethealer', info)
-
+    info = ''
+    response['target'].map {|k,v| info = info + "#{k} - #{v}\n"}    
+      data = {
+        values: { type: "CRITICAL", info: ip },
+      }
+      influxdb.write_point('nethealer', info)
+    
   end
 
 end
