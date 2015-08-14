@@ -5,23 +5,26 @@ require 'redis-namespace'
 require 'json'
 require 'dotenv'
 require 'rest-client'
+require 'influxdb'
 
 Dotenv.load
 require_relative '../app_config'
 
-nethealer_server=AppConfig::REDIS.server
+nethealer_server=AppConfig::NETHEALER.server
+netmonitor_server=AppConfig::NETHEALER.grafana
+influxdb = InfluxDB::Client.new 'events', host: netmonitor_server, username: 'fastnetmon', password: 'dd0s'
 $redis_connection = Redis.new(:host => nethealer_server)
 $namespaced_current = Redis::Namespace.new('healer_current', redis: $redis_connection)
 $namespaced_history = Redis::Namespace.new('healer_history', redis: $redis_connection)
 scheduler = Rufus::Scheduler.new
 
 healer = RestClient::Resource.new(
-    "https://#{nethealer_server}/healer/v1/",
-    #user: Config::NETHEALER.user,
-    #password: Config::NETHEALER.password,
-    headers: { content_type: 'application/json' },
-    verify_ssl: false
-  ) 
+  "https://#{nethealer_server}/healer/v1/",
+  #user: Config::NETHEALER.user,
+  #password: Config::NETHEALER.password,
+  headers: { content_type: 'application/json' },
+  verify_ssl: false
+)
 
 $debug = 1
 
@@ -124,10 +127,24 @@ scheduler.every '5s' do
 end
 
 
-scheduler.every '3s' do
-  
-  status = JSON.parse(healer['ddos/status'].get)
-  puts JSON.pretty_generate(status)
+# Graph markdown
+
+scheduler.every '10s' do
+
+  response = JSON.parse(healer['ddos/status'].get)
+  status = response['status']
+  case status
+  when 'clear'
+    print '!'
+  when 'warning'
+    print '|Warning| '
+    data = {
+      values: { type: "warning", info: "10.10.10.10" },
+    }
+    influxdb.write_point('nethealer', data)
+  else
+    print '.'
+  end
 
 end
 

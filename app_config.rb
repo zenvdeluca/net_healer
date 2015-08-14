@@ -2,14 +2,15 @@ require 'pathname'
 
 module AppConfig
 
-  class REDIS
+  class NETHEALER
     @server = ENV['REDIS_SERVER']
     @port = ENV['REDIS_PORT']
+    @grafana = 'netmonitor.zdsys.com'
     %i[@server].each do |config_var|
       raise "REDIS misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
     end
     class << self
-      attr_reader :server, :port
+      attr_reader :server, :port, :grafana
     end
   end
 
