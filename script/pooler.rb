@@ -145,7 +145,8 @@ scheduler.every '5s' do
     print '|Warning| '
     info = ''
     response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
-    last_data = data ; last_data[:values].delete(:series)
+    last_data = data
+    last_data[:values].delete(:series)
     data = {
       values: { type: "WARNING", info: info.to_s, },
     }
@@ -155,7 +156,8 @@ scheduler.every '5s' do
     print '|Attack| '
     info = ''
     response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
-    last_data = data ; last_data[:values].delete(:series)
+    last_data = data
+    last_data[:values].delete(:series)
     data = {
       values: { type: "CRITICAL", info: info.to_s },
     }
