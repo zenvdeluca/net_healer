@@ -11,8 +11,7 @@ Dotenv.load
 require_relative '../app_config'
 
 nethealer_server=AppConfig::NETHEALER.server
-netmonitor_server=AppConfig::NETHEALER.grafana
-influxdb = InfluxDB::Client.new 'events', host: netmonitor_server, username: 'fastnetmon', password: 'dd0s'
+influxdb = InfluxDB::Client.new 'events', host: AppConfig::NETHEALER.influxdb, username: AppConfig::NETHEALER.username, password: AppConfig::NETHEALER.password
 $redis_connection = Redis.new(:host => nethealer_server)
 $namespaced_current = Redis::Namespace.new('healer_current', redis: $redis_connection)
 $namespaced_history = Redis::Namespace.new('healer_history', redis: $redis_connection)
