@@ -26,7 +26,7 @@ healer = RestClient::Resource.new(
   verify_ssl: false
 )
 
-$debug = 1
+$debug = 2
 
 def fetch_fastnetmon_redis(queue)
   payloads_raw = {}
@@ -95,7 +95,7 @@ end
 
 
 
-$count = 0
+$count = 18
 scheduler.every '5s' do
   current = []
   pattern = '*_packets_dump'
