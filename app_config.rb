@@ -4,7 +4,6 @@ module AppConfig
 
   class NETHEALER
     @server = ENV['NETHEALER_SERVER']
-    @port = ENV['NETHEALER_PORT']
     @grafana = ENV['NETHEALER_INFLUXDB']
     @username = ENV['NETHEALER_USERNAME']
     @password = ENV['NETHEALER_PASSWORD']
@@ -13,7 +12,7 @@ module AppConfig
       raise "NETHEALER misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
     end
     class << self
-      attr_reader :server, :port, :influxdb, :username, :password
+      attr_reader :server, :influxdb, :username, :password
     end
   end
 
