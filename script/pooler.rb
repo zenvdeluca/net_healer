@@ -33,7 +33,7 @@ def parse_fastnetmon_redis(payloads_raw)
   payloads = []
   payloads_raw.each do |key,value|
     begin
-      info = payloads_raw[key][:information].split("\n").map { |lv| k,v = lv.split(':') ; next if k.nil? ; k.gsub!(' ','_') ;v.strip! ; k.downcase!;[ k,v ] }.select { |_,value| not value.nil? }.to_h
+      info = JSON.parse(payloads_raw[key][:information])
       flow_dump = payloads_raw[key][:flow_dump].split("\n").reject! { |l| l.empty? } unless payloads_raw[key][:flow_dump].nil?
       packets_dump = payloads_raw[key][:packets_dump].split("\n").reject! { |l| l.empty? || !l.include?('sample')} unless payloads_raw[key][:packets_dump].nil?
       
@@ -82,7 +82,7 @@ end
 
 
 
-$count = 18
+$count = 0
 scheduler.every '5s' do
   current = []
   pattern = '*_packets_dump'
