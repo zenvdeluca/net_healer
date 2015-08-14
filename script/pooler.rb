@@ -129,7 +129,7 @@ end
 
 # Graph markdown
 
-scheduler.every '10s' do
+scheduler.every '5s' do
 
   last_data = nil
   data = ''
