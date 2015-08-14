@@ -145,9 +145,9 @@ scheduler.every '5s' do
     print '|Warning| '
     info = ''
     response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
-    last_data = data
+    last_data = data ; last_data[:values].delete(:series)
     data = {
-      values: { type: "WARNING", info: info.to_s, series: 'nethealer'},
+      values: { type: "WARNING", info: info.to_s, },
     }
     influxdb.write_point('nethealer', data) if data != last_data
     puts "#{data} - #{last_data}"
@@ -155,9 +155,9 @@ scheduler.every '5s' do
     print '|Attack| '
     info = ''
     response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
-    last_data = data
+    last_data = data ; last_data[:values].delete(:series)
     data = {
-      values: { type: "CRITICAL", info: info.to_s, series: 'nethealer' },
+      values: { type: "CRITICAL", info: info.to_s },
     }
     puts ""
     puts "A: #{data}"
