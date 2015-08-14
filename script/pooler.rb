@@ -11,7 +11,9 @@ Dotenv.load
 require_relative '../app_config'
 
 nethealer_server=AppConfig::NETHEALER.server
-influxdb = InfluxDB::Client.new 'events', host: AppConfig::NETHEALER.influxdb, username: AppConfig::NETHEALER.username, password: AppConfig::NETHEALER.password
+influxdb_events = InfluxDB::Client.new 'events', host: AppConfig::NETHEALER.influxdb, username: AppConfig::NETHEALER.username, password: AppConfig::NETHEALER.password
+influxdb_graphite = InfluxDB::Client.new 'graphite', host: AppConfig::NETHEALER.influxdb, username: AppConfig::NETHEALER.username, password: AppConfig::NETHEALER.password
+
 $redis_connection = Redis.new(:host => nethealer_server)
 $namespaced_current = Redis::Namespace.new('healer_current', redis: $redis_connection)
 $namespaced_history = Redis::Namespace.new('healer_history', redis: $redis_connection)
@@ -151,7 +153,7 @@ scheduler.every '5s' do
     data = {
       values: { type: "WARNING", info: info.to_s, },
     }
-    influxdb.write_point('nethealer', data) if data != last_data
+    influxdb_events.write_point('nethealer', data) if data != last_data
   else
     puts "|Attack| - #{Time.now}"
     info = ''
@@ -161,13 +163,24 @@ scheduler.every '5s' do
     data = {
       values: { type: "CRITICAL", info: info.to_s },
     }
-    influxdb.write_point('nethealer', data) if data != last_data
+    influxdb_events.write_point('nethealer', data) if data != last_data
   end
 
 end
 
 scheduler.every '2s' do
-  puts "sou bonito"
+  incoming = outgoing = nil
+  total = influxdb_graphite.query "select mean(value) from total where time > now() - 10s and resource = 'bps' group by direction,resource"
+  total.each do |item|
+    incoming = item["values"].first["mean"] if item['tags']['direction'] == 'incoming'
+    outgoing = item["values"].first["mean"] if item['tags']['direction'] == 'outgoing'
+  end
+  ratio = incoming / outgoing
+  data = {
+      values: { type: "ratio", info: ratio, },
+    }
+  influxdb_events.write_point('ratio', data)
+  puts "wrote"
 end
 
 scheduler.join
