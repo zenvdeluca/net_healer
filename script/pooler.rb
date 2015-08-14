@@ -4,14 +4,24 @@ require 'redis'
 require 'redis-namespace'
 require 'json'
 require 'dotenv'
+require 'rest-client'
+
 Dotenv.load
 require_relative '../app_config'
 
-redis_server=AppConfig::REDIS.server
-$redis_connection = Redis.new(:host => redis_server)
+nethealer_server=AppConfig::REDIS.server
+$redis_connection = Redis.new(:host => nethealer_server)
 $namespaced_current = Redis::Namespace.new('healer_current', redis: $redis_connection)
 $namespaced_history = Redis::Namespace.new('healer_history', redis: $redis_connection)
 scheduler = Rufus::Scheduler.new
+
+healer = RestClient::Resource.new(
+    "https://#{nethealer_server}/healer/v1/",
+    #user: Config::NETHEALER.user,
+    #password: Config::NETHEALER.password,
+    headers: { content_type: 'application/json' },
+    verify_ssl: false
+  ) 
 
 $debug = 1
 
@@ -36,12 +46,12 @@ def parse_fastnetmon_redis(payloads_raw)
       info = JSON.parse(payloads_raw[key][:information])
       flow_dump = payloads_raw[key][:flow_dump].split("\n").reject! { |l| l.empty? } unless payloads_raw[key][:flow_dump].nil?
       packets_dump = payloads_raw[key][:packets_dump].split("\n").reject! { |l| l.empty? || !l.include?('sample')} unless payloads_raw[key][:packets_dump].nil?
-      
+
       payloads << { information: info,
                     flow_dump: flow_dump,
                     packets_dump: packets_dump
-      }
-    rescue Exception => e  
+                    }
+    rescue Exception => e
       puts e.message if $debug >= 1
       puts e.backtrace.inspect if $debug == 2
       puts "Failed to parse #{key}: #{payloads_raw[key]} ignoring null report..." if $debug >= 1
@@ -78,7 +88,7 @@ def gc_fastnetmon_redis
   $count = 0
   return true
 end
-    
+
 
 
 
@@ -89,20 +99,20 @@ scheduler.every '5s' do
   begin
     $redis_connection.scan_each(:match => pattern) {|key| current << key.split('_')[0] }
   rescue
-    puts "#{Time.now} - [ERROR] - Failed to connect to Redis :( - [#{redis_server}]"
+    puts "#{Time.now} - [ERROR] - Failed to connect to Redis :( - [#{nethealer_server}]"
     next
   end
-  
+
   if current.empty?
-    puts "#{Time.now} - [INFO] - no new attack reports found - [#{redis_server}]" if $debug >= 2
+    puts "#{Time.now} - [INFO] - no new attack reports found - [#{nethealer_server}]" if $debug >= 2
     next
   end
-  $count += 1 
-  puts "#{Time.now} - [INFO] - Fetching FastNetMon detected attack reports - [#{redis_server}]" if $debug >= 1
+  $count += 1
+  puts "#{Time.now} - [INFO] - Fetching FastNetMon detected attack reports - [#{nethealer_server}]" if $debug >= 1
   payloads_raw = fetch_fastnetmon_redis(current)
   payloads = parse_fastnetmon_redis(payloads_raw)
 
-  puts "#{Time.now} - [INFO] - Feeding Healer analyzer - [#{redis_server}]" if $debug >= 1
+  puts "#{Time.now} - [INFO] - Feeding Healer analyzer - [#{nethealer_server}]" if $debug >= 1
 
   #feed net healer queue
   feed_nethealer(payloads)
@@ -112,5 +122,14 @@ scheduler.every '5s' do
 
   puts "#{Time.now} - [INFO] - Back to listen state."
 end
+
+
+scheduler.every '3s' do
+  
+  status = JSON.parse(healer['ddos/status'].get)
+  puts JSON.pretty_generate(status)
+
+end
+
 
 scheduler.join
