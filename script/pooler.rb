@@ -134,6 +134,7 @@ scheduler.every '10s' do
   response = JSON.parse(healer['ddos/status'].get)
   status = response['status']
   target = response['target']
+
   case status
   when 'clear'
     print '!'
@@ -145,7 +146,6 @@ scheduler.every '10s' do
         values: { type: "WARNING", info: info.to_s },
       }
       influxdb.write_point('nethealer', data)
-
   else
     print '|Attack| '
     info = ''
@@ -153,7 +153,7 @@ scheduler.every '10s' do
       data = {
         values: { type: "CRITICAL", info: info.to_s },
       }
-      influxdb.write_point('nethealer', info)
+      influxdb.write_point('nethealer', data)
     
   end
 
