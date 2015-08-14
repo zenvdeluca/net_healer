@@ -150,6 +150,7 @@ scheduler.every '5s' do
       values: { type: "WARNING", info: info.to_s },
     }
     influxdb.write_point('nethealer', data) if data != last_data
+    puts "#{data} - #{last_data}"
   else
     print '|Attack| '
     info = ''
@@ -159,6 +160,7 @@ scheduler.every '5s' do
       values: { type: "CRITICAL", info: info.to_s },
     }
     influxdb.write_point('nethealer', data) if data != last_data
+    puts "#{data} - #{last_data}"
 
   end
 
