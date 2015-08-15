@@ -169,32 +169,16 @@ scheduler.every '5s' do
 end
 
 scheduler.every '1s' do
-  incoming_bps = incoming_pps = outgoing_bps = outgoing_pps = nil
   total_bps = influxdb_graphite.query "select last(value) from total where resource = 'pps' group by direction,resource"
-  total_bps.each do |item|
-    incoming_bps = item["values"].first["median"] if item['tags']['direction'] == 'incoming'
-    outgoing_bps = item["values"].first["median"] if item['tags']['direction'] == 'outgoing'
-  end
-
+  ratio_bps = total_bps[0]['values'].first['last'].to_f / total_bps[1]['values'].first['last'].to_f
+  payload_bps = { values: { info: ratio_bps } }
+  
   total_pps = influxdb_graphite.query "select last(value) from total where resource = 'pps' group by direction,resource"
-  total_pps.each do |item|
-    incoming_pps = item["values"].first["median"] if item['tags']['direction'] == 'incoming'
-    outgoing_pps = item["values"].first["median"] if item['tags']['direction'] == 'outgoing'
-  end
+  ratio_pps = total_pps[0]['values'].first['last'].to_f / total_bps[1]['values'].first['last'].to_f
+  payload_pps = { values: { info: ratio_pps } }
 
-  ratio_bps = incoming_bps.to_f / outgoing_bps.to_f
-  ratio_pps = incoming_pps.to_f / outgoing_pps.to_f
-  
-  data_bps = {
-      values: { info: ratio_bps },
-    }
-  
-  data_pps = {
-      values: { info: ratio_pps },
-    }
-
-  influxdb_events.write_point('ratio_bps', data_bps)
-  influxdb_events.write_point('ratio_pps', data_pps)
+  influxdb_events.write_point('ratio_bps', payload_bps)
+  influxdb_events.write_point('ratio_pps', payload_pps)
 end
 
 scheduler.join
