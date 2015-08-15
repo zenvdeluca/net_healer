@@ -169,7 +169,7 @@ scheduler.every '5s' do
 end
 
 scheduler.every '1s' do
-  total_bps = influxdb_graphite.query "select last(value) from total where resource = 'pps' group by direction,resource"
+  total_bps = influxdb_graphite.query "select last(value) from total where resource = 'bps' group by direction,resource"
   ratio_bps = total_bps[0]['values'].first['last'].to_f / total_bps[1]['values'].first['last'].to_f
   payload_bps = { values: { info: ratio_bps } }
   
