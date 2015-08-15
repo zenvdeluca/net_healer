@@ -193,9 +193,8 @@ scheduler.every '1s' do
       values: { type: "pps", info: ratio_pps },
     }
 
-  influxdb_events.write_point('ratio', data_bps)
-  influxdb_events.write_point('ratio', data_pps)
-  print 'rw'
+  influxdb_events.write_point('ratio_bps', data_bps)
+  influxdb_events.write_point('ratio_pps', data_pps)
 end
 
 scheduler.join
