@@ -168,7 +168,7 @@ scheduler.every '5s' do
 
 end
 
-scheduler.every '2s' do
+scheduler.every '1s' do
   incoming_bps = incoming_pps = outgoing_bps = outgoing_pps = nil
   total_bps = influxdb_graphite.query "select median(value) from total where time > now() - 10s and resource = 'bps' group by direction,resource"
   total_bps.each do |item|
