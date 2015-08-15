@@ -174,7 +174,7 @@ scheduler.every '1s' do
   payload_bps = { values: { info: ratio_bps } }
   
   total_pps = influxdb_graphite.query "select last(value) from total where resource = 'pps' group by direction,resource"
-  ratio_pps = total_pps[0]['values'].first['last'].to_f / total_bps[1]['values'].first['last'].to_f
+  ratio_pps = total_pps[0]['values'].first['last'].to_f / total_pps[1]['values'].first['last'].to_f
   payload_pps = { values: { info: ratio_pps } }
 
   influxdb_events.write_point('ratio_bps', payload_bps)
