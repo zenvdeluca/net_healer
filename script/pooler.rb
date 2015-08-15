@@ -178,17 +178,19 @@ scheduler.every '2s' do
 
   total_pps = influxdb_graphite.query "select median(value) from total where time > now() - 10s and resource = 'pps' group by direction,resource"
   total_pps.each do |item|
-    incoming_bps = item["values"].first["median"] if item['tags']['direction'] == 'incoming'
-    outgoing_bps = item["values"].first["median"] if item['tags']['direction'] == 'outgoing'
+    incoming_pps = item["values"].first["median"] if item['tags']['direction'] == 'incoming'
+    outgoing_pps = item["values"].first["median"] if item['tags']['direction'] == 'outgoing'
   end
 
   ratio_bps = incoming_bps / outgoing_bps
+  ratio_pps = incoming_pps / outgoing_pps
+  
   data_bps = {
       values: { type: "bps", info: ratio_bps },
     }
-  ratio_pps = incoming_pps / outgoing_pps
+  
   data_pps = {
-      values: { type: "pps", info: ratio_bps },
+      values: { type: "pps", info: ratio_pps },
     }
 
   influxdb_events.write_point('ratio', data_bps)
