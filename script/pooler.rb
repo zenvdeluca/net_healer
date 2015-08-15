@@ -182,7 +182,7 @@ scheduler.every '2s' do
     outgoing_bps = item["values"].first["median"] if item['tags']['direction'] == 'outgoing'
   end
 
-  ratio_bps = incoming_bps / outgoing_pps
+  ratio_bps = incoming_bps / outgoing_bps
   data_bps = {
       values: { type: "bps", info: ratio_bps },
     }
