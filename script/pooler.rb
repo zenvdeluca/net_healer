@@ -87,7 +87,7 @@ def gc_fastnetmon_redis
     puts "#{Time.now} - [INFO] - Running garbage collection..." if $debug == 2
     gc = []
     pattern = '*_information'
-    $redis_connection.scan_each(:match => pattern) {|key| gc << key.rpartition('_')[0] }
+    $redis_connection.scan_each(:match => pattern) {|key| gc << key.rpartition('_')[0].rpartition('_')[0] }
     gc.each do |ip|
       puts "removing null key for #{ip}" if $debug == 2
       $redis_connection.del("#{ip}_information")
@@ -104,7 +104,7 @@ scheduler.every '5s' do
   current = []
   pattern = '*_packets_dump'
   begin
-    $redis_connection.scan_each(:match => pattern) {|key| current << key.rpartition('_')[0] }
+    $redis_connection.scan_each(:match => pattern) {|key| current << key.rpartition('_')[0].rpartition('_')[0] }
   rescue
     puts "#{Time.now} - [ERROR] - Failed to connect to Redis :( - [#{nethealer_server}]"
     next
