@@ -90,11 +90,13 @@ def gc_fastnetmon_redis
     puts "#{Time.now} - [INFO] - Running garbage collection..." if $debug == 2
     gc = []
     pattern = '*_information'
-    $redis_connection.scan_each(:match => pattern) {|key| gc << key.rpartition('_')[0].rpartition('_')[0] }
-    gc.each do |ip|
-      puts "removing null key for #{ip}" if $debug == 2
-      $redis_connection.del("#{ip}_information")
-      $redis_connection.del("#{ip}_flow_dump")
+    $redis_connection.scan_each(:match => pattern) {|key| gc << key.split('_')[0] }
+    gc.each do |junk|
+      puts "removing null key for #{junk}" if $debug == 2
+      $redis_connection.del("#{junk}_information")
+      $redis_connection.del("#{junk}_flow_dump")
+      $redis_connection.del("#{junk}_packets_dump")
+
     end
     $count = 0
   end
