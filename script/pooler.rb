@@ -28,7 +28,7 @@ healer = RestClient::Resource.new(
 )
 
 $debug = 1
-$count = 0
+$count = 5
 
 def fetch_fastnetmon_redis(queue)
   payloads_raw = {}
@@ -40,7 +40,7 @@ def fetch_fastnetmon_redis(queue)
       flow_dump: $redis_connection.get("#{ip}_flow_dump"),
       packets_dump: $redis_connection.get("#{ip}_packets_dump")
     }
-    
+
     # After import, erase from Redis (fastnetmon raw format)
     $redis_connection.del("#{ip}_information","#{ip}_flow_dump","#{ip}_packets_dump")
   end
@@ -86,7 +86,7 @@ end
 
 def gc_fastnetmon_redis
   $count += 1
-  if $count > 20
+  if $count > 3
     puts "#{Time.now} - [INFO] - Running garbage collection..." if $debug == 2
     gc = []
     pattern = '*_information'
