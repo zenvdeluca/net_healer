@@ -55,7 +55,8 @@ def parse_fastnetmon_redis(payloads_raw)
       flow_dump = payloads_raw[key][:flow_dump].split("\n").reject! { |l| l.empty? } unless payloads_raw[key][:flow_dump].nil?
       packets_dump = payloads_raw[key][:packets_dump].split("\n").reject! { |l| l.empty? || !l.include?('sample')} unless payloads_raw[key][:packets_dump].nil?
 
-      payloads << { information: info,
+      payloads << { site: payloads_raw[key][:site],
+                    information: info,
                     flow_dump: flow_dump,
                     packets_dump: packets_dump
                     }
@@ -74,7 +75,6 @@ def feed_nethealer(payloads)
   payloads.each do |attack_report|
     timestamp = Time.now.strftime("%Y%m%d-%H%M%S")
     key = attack_report[:information]['ip'] + '-' + timestamp
-    #attack_report[:information]['site'] = 
     $namespaced_current.set(key, attack_report)
     $namespaced_history.set(key, attack_report)
     $namespaced_current.expire(key, AppConfig::THRESHOLDS.expire)
