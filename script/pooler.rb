@@ -28,6 +28,7 @@ healer = RestClient::Resource.new(
 )
 
 $debug = 1
+$count = 0
 
 def fetch_fastnetmon_redis(queue)
   payloads_raw = {}
@@ -55,6 +56,7 @@ def parse_fastnetmon_redis(payloads_raw)
                     flow_dump: flow_dump,
                     packets_dump: packets_dump
                     }
+
     rescue Exception => e
       puts e.message if $debug >= 1
       puts e.backtrace.inspect if $debug == 2
@@ -69,6 +71,7 @@ def feed_nethealer(payloads)
   payloads.each do |attack_report|
     timestamp = Time.now.strftime("%Y%m%d-%H%M%S")
     key = attack_report[:information]['ip'] + '-' + timestamp
+    attack_report[:information]['site'] = key.split('_')[0]
     $namespaced_current.set(key, attack_report)
     $namespaced_history.set(key, attack_report)
     $namespaced_current.expire(key, AppConfig::THRESHOLDS.expire)
@@ -84,26 +87,24 @@ def gc_fastnetmon_redis
     puts "#{Time.now} - [INFO] - Running garbage collection..." if $debug == 2
     gc = []
     pattern = '*_information'
-    $redis_connection.scan_each(:match => pattern) {|key| gc << key.split('_')[0] }
+    $redis_connection.scan_each(:match => pattern) {|key| gc << key.rpartition('_')[0] }
     gc.each do |ip|
       puts "removing null key for #{ip}" if $debug == 2
       $redis_connection.del("#{ip}_information")
       $redis_connection.del("#{ip}_flow_dump")
     end
-  $count = 0
+    $count = 0
   end
   return true
 end
 
 
 
-
-$count = 18
 scheduler.every '5s' do
   current = []
   pattern = '*_packets_dump'
   begin
-    $redis_connection.scan_each(:match => pattern) {|key| current << key.split('_')[0] }
+    $redis_connection.scan_each(:match => pattern) {|key| current << key.rpartition('_')[0] } }
   rescue
     puts "#{Time.now} - [ERROR] - Failed to connect to Redis :( - [#{nethealer_server}]"
     next
@@ -113,6 +114,7 @@ scheduler.every '5s' do
     puts "#{Time.now} - [INFO] - no new attack reports found - [#{nethealer_server}]" if $debug >= 2
     next
   end
+
   puts "#{Time.now} - [INFO] - Fetching FastNetMon detected attack reports - [#{nethealer_server}]" if $debug >= 1
   payloads_raw = fetch_fastnetmon_redis(current)
   payloads = parse_fastnetmon_redis(payloads_raw)
@@ -123,9 +125,9 @@ scheduler.every '5s' do
   feed_nethealer(payloads)
   #call garbage collection function
   gc_fastnetmon_redis
-  
 
-  
+
+
   puts "#{Time.now} - [INFO] - Back to listen state."
 end
 
@@ -134,7 +136,7 @@ end
 
 last_data = nil
 data = ''
-  
+
 scheduler.every '5s' do
 
   response = JSON.parse(healer['ddos/status'].get)
@@ -172,7 +174,7 @@ scheduler.every '1s' do
   total_bps = influxdb_graphite.query "select last(value) from total where resource = 'bps' group by direction,resource"
   ratio_bps = total_bps[0]['values'].first['last'].to_f / total_bps[1]['values'].first['last'].to_f
   payload_bps = { values: { info: ratio_bps } }
-  
+
   total_pps = influxdb_graphite.query "select last(value) from total where resource = 'pps' group by direction,resource"
   ratio_pps = total_pps[0]['values'].first['last'].to_f / total_pps[1]['values'].first['last'].to_f
   payload_pps = { values: { info: ratio_pps } }
