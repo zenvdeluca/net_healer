@@ -72,7 +72,7 @@ def feed_nethealer(payloads)
     timestamp = Time.now.strftime("%Y%m%d-%H%M%S")
     key = attack_report[:information]['ip'] + '-' + timestamp
     attack_report[:information]['site'] = key.split('_')[0]
-    $namespaced_current.set(key, attack_report)
+      $namespaced_current.set(key, attack_report)
     $namespaced_history.set(key, attack_report)
     $namespaced_current.expire(key, AppConfig::THRESHOLDS.expire)
     puts JSON.pretty_generate(JSON.parse(attack_report.to_json)) if $debug == 2
@@ -104,7 +104,7 @@ scheduler.every '5s' do
   current = []
   pattern = '*_packets_dump'
   begin
-    $redis_connection.scan_each(:match => pattern) {|key| current << key.rpartition('_')[0] } }
+    $redis_connection.scan_each(:match => pattern) {|key| current << key.rpartition('_')[0] }
   rescue
     puts "#{Time.now} - [ERROR] - Failed to connect to Redis :( - [#{nethealer_server}]"
     next
