@@ -33,11 +33,14 @@ $count = 0
 def fetch_fastnetmon_redis(queue)
   payloads_raw = {}
   queue.each do |ip|
+
     payloads_raw[ip] = {
+      site: ip.split('_')[0],
       information: $redis_connection.get("#{ip}_information"),
       flow_dump: $redis_connection.get("#{ip}_flow_dump"),
       packets_dump: $redis_connection.get("#{ip}_packets_dump")
     }
+    
     # After import, erase from Redis (fastnetmon raw format)
     $redis_connection.del("#{ip}_information","#{ip}_flow_dump","#{ip}_packets_dump")
   end
@@ -71,8 +74,8 @@ def feed_nethealer(payloads)
   payloads.each do |attack_report|
     timestamp = Time.now.strftime("%Y%m%d-%H%M%S")
     key = attack_report[:information]['ip'] + '-' + timestamp
-    attack_report[:information]['site'] = key.split('_')[0]
-      $namespaced_current.set(key, attack_report)
+    #attack_report[:information]['site'] = 
+    $namespaced_current.set(key, attack_report)
     $namespaced_history.set(key, attack_report)
     $namespaced_current.expire(key, AppConfig::THRESHOLDS.expire)
     puts JSON.pretty_generate(JSON.parse(attack_report.to_json)) if $debug == 2
