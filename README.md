@@ -1,6 +1,7 @@
 # NET HEALER 
 
-NET HEALER centralizes DDoS Attack Reports from FastNetMon collectors, allowing custom notification / mitigation rules, as well integration with lossy count non-gaussian algorithm to help anomaly detection and avoid false positives.
+NET HEALER centralizes DDoS Attack Reports from FastNetMon collectors, allowing custom notification / mitigation rules, as well integration with lossy count non-gaussian algorithm to help anomaly detection and avoid false positives.<br>
+It provides an API abstraction via https. see examples below 
 
 ## NET HEALER Stages example
 - cleared - no Attack Reports received for any /32 target
