@@ -6,7 +6,7 @@ NET HEALER centralizes DDoS Attack Reports from FastNetMon collectors, allowing 
 - cleared - no Attack Reports received for any /32 target
 - warning - less than 3 Attack Reports received for /32 target(s)
 - critical - more than [x] Attack Reports received for /32 target(s)
-- under_attack - more than critical :)
+- under_attack - more than critical :) it means FNM + other algorithms detected an ongoing attack
 
 Each 1 FNM /32 ban = 1 NET HEALER Attack Report<br>
 Lower the FNM ban time, faster NET HEALER will advance in stages (thresholds can be customized)<br>
@@ -36,7 +36,7 @@ Start with FNM ban time: 30 seconds (NET HEALER will converge from cleared to wa
 5. Populate `.env` with a config
 6. `$ bundle exec script/start`
 
-### Install Grafana for cool dashboard viz (https://github.com/grafana/grafana)
+## Screenshot during an attack
 ![alt tag](https://raw.githubusercontent.com/zenvdeluca/net_healer/master/img/nethealer.png)
 
 ##How to query the API
