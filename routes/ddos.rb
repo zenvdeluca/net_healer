@@ -18,7 +18,7 @@ class Healer
 
   namespace API_URL do
 
-    get "/ddos/reports/?" do
+    get "/ddos/reports/?:p1?" do
       current = []
       pattern = '*' + Time.now.strftime("%Y") + '*'
       namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
@@ -54,11 +54,19 @@ class Healer
         aggregate["#{k}"]['incoming']['icmp'] = {}
         aggregate["#{k}"]['incoming']['icmp']['traffic'] = 0
         aggregate["#{k}"]['incoming']['icmp']['pps'] = 0
+
+        aggregate["#{k}"]['capture'] = [] if params[:p1] == 'capture'
+
+
       
        
 
         reports["#{k}"].each do |item|
-
+          aggregate["#{k}"]['detected'] += 1
+          aggregate["#{k}"]['attack_type'] = 'unknown' && item[:information]['attack_details']['attack_type']
+          aggregate["#{k}"]['direction'] = item[:information]['attack_details']['attack_direction']
+          aggregate["#{k}"]['protocol'] = aggregate["#{k}"]['protocol'] | [item[:information]['attack_details']['attack_protocol']]
+        
           aggregate["#{k}"]['incoming']['total']['traffic'] = [aggregate["#{k}"]['incoming']['total']['traffic'],item[:information]['attack_details']['total_incoming_traffic']].max
           aggregate["#{k}"]['incoming']['total']['pps'] = [aggregate["#{k}"]['incoming']['total']['pps'],item[:information]['attack_details']['total_incoming_pps']].max
           aggregate["#{k}"]['incoming']['total']['flows'] = [aggregate["#{k}"]['incoming']['total']['flows'],item[:information]['attack_details']['total_incoming_flows']].max
@@ -74,12 +82,9 @@ class Healer
           
           aggregate["#{k}"]['incoming']['icmp']['traffic'] = [aggregate["#{k}"]['incoming']['icmp']['traffic'],item[:information]['attack_details']['incoming_icmp_traffic']].max
           aggregate["#{k}"]['incoming']['icmp']['pps'] = [aggregate["#{k}"]['incoming']['icmp']['pps'],item[:information]['attack_details']['incoming_icmp_pps']].max
-          
-          aggregate["#{k}"]['detected'] += 1
-          aggregate["#{k}"]['attack_type'] = 'unknown' && item[:information]['attack_details']['attack_type']
-          aggregate["#{k}"]['direction'] = item[:information]['attack_details']['attack_direction']
-          aggregate["#{k}"]['protocol'] = aggregate["#{k}"]['protocol'] | [item[:information]['attack_details']['attack_protocol']]
-        
+
+          item[:packets_dump].each { |pcap_line| aggregate["#{k}"]['capture'] << pcap_line } if params[:p1] == 'capture'
+
 
         end
       end
