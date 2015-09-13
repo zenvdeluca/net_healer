@@ -227,7 +227,7 @@ scheduler.every '10s' do
     #top = top_talkers(10)
 
     message = <<MESSAGE_END
-From: DDoS Detection <no-reply@zendesk.com>
+From: DDoS Detection <nethealer@zendesk.com>
 To: Network Operations <healer@ddos.zendesk.com>
 Subject: [WARNING] - Possible DDoS - targets: #{info}
 
@@ -246,7 +246,7 @@ MESSAGE_END
     unless notifications_warning.include?(message)
 
       Net::SMTP.start('out.vip.pod5.iad1.zdsys.com') do |smtp|
-        smtp.send_message message, 'ddos@zendesk.com','healer@ddos.zendesk.com'
+        smtp.send_message message, 'nethealer@zendesk.com','healer@ddos.zendesk.com'
       end
       puts "|Notifications_Warning_Sent| - #{Time.now}"
 
@@ -265,7 +265,7 @@ MESSAGE_END
     #top = top_talkers(10)
 
     message = <<MESSAGE_END
-From: DDoS Detection <no-reply@zendesk.com>
+From: DDoS Detection <nethealer@zendesk.com>
 To: Network Operations <healer@ddos.zendesk.com>
 Subject: [CRITICAL] - DDoS Attack - targets: #{info}
 
