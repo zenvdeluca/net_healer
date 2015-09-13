@@ -97,7 +97,7 @@ Start with FNM ban time: 30 seconds (NET HEALER will converge from cleared to wa
 ```
 
 ### GET /healer/v1/ddos/brief 
-=> query DDoS /32 targets brief
+=> query /32 targets + amount of current Attack Reports
 ```json
 {
   "reports": {
