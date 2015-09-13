@@ -19,6 +19,45 @@ class Healer
 
   namespace API_URL do
 
+    get "/ddos/brief/?" do
+      current = []
+      pattern = '*' + Time.now.strftime("%Y") + '*'
+      namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
+      reports = report_initializer(current)
+      unless reports
+        body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
+      else
+        summary = reports.map { |k,v| { "#{k}" => v.length } }
+        brief = summary.reduce Hash.new, :merge
+        body({reports: brief, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
+      end
+    end
+
+    get "/ddos/status/?" do
+      current = []
+      warning = {}
+      critical = {}
+
+      pattern = '*' + Time.now.strftime("%Y") + '*'
+      namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
+      reports = report_initializer(current)
+      unless reports
+        body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
+      else
+        summary = reports.map { |k,v| { "#{k}" => v.length } }
+        brief = summary.reduce Hash.new, :merge
+        brief.each do |k,v|
+          warning[k] = v if v >= AppConfig::THRESHOLDS.warning
+          critical[k] = v if v >= AppConfig::THRESHOLDS.critical
+        end
+
+        return body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json) if warning.empty? && critical.empty?
+        return body({status: 'warning', target: warning, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json) if critical.empty?
+        return body({status: 'critical', target: critical, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
+      end
+
+    end
+
     get "/ddos/reports/?:p1?" do
       current = []
       pattern = '*' + Time.now.strftime("%Y") + '*'
@@ -107,45 +146,6 @@ class Healer
       
         body({reports: aggregate, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
       end
-    end
-
-    get "/ddos/brief/?" do
-      current = []
-      pattern = '*' + Time.now.strftime("%Y") + '*'
-      namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
-      reports = report_initializer(current)
-      unless reports
-        body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
-      else
-        summary = reports.map { |k,v| { "#{k}" => v.length } }
-        brief = summary.reduce Hash.new, :merge
-        body({reports: brief, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
-      end
-    end
-
-    get "/ddos/status/?" do
-      current = []
-      warning = {}
-      critical = {}
-
-      pattern = '*' + Time.now.strftime("%Y") + '*'
-      namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
-      reports = report_initializer(current)
-      unless reports
-        body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
-      else
-        summary = reports.map { |k,v| { "#{k}" => v.length } }
-        brief = summary.reduce Hash.new, :merge
-        brief.each do |k,v|
-          warning[k] = v if v >= AppConfig::THRESHOLDS.warning
-          critical[k] = v if v >= AppConfig::THRESHOLDS.critical
-        end
-
-        return body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json) if warning.empty? && critical.empty?
-        return body({status: 'warning', target: warning, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json) if critical.empty?
-        return body({status: 'critical', target: critical, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
-      end
-
     end
 
   end
