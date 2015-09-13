@@ -89,8 +89,10 @@ end
 
 def gc_fastnetmon_redis
   $count += 1
-  if $count > 3
+  if $count > 30
     puts "#{Time.now} - [INFO] - Running garbage collection..." if $debug == 2
+    $notifications_warning = []
+    $notifications_critical = []
     gc = []
     pattern = '*_information'
     $redis_connection.scan_each(:match => pattern) {|key| gc << key.rpartition('_')[0] }
@@ -99,7 +101,6 @@ def gc_fastnetmon_redis
       $redis_connection.del("#{junk}_information")
       $redis_connection.del("#{junk}_flow_dump")
       $redis_connection.del("#{junk}_packets_dump")
-
     end
     $count = 0
   end
@@ -205,8 +206,8 @@ end
 
 # Notifications
 
-notifications_warning = []
-notifications_critical = []
+$notifications_warning = []
+$notifications_critical = []
 
 scheduler.every '10s' do
   response = JSON.parse(healer['ddos/status'].get)
@@ -241,7 +242,7 @@ Packet capture:
 
 MESSAGE_END
 
-    unless notifications_warning.include?(message)
+    unless $notifications_warning.include?(message)
       Net::SMTP.start('out.vip.pod5.iad1.zdsys.com') do |smtp|
         smtp.send_message message, 'nethealer@zendesk.com','healer@ddos.zendesk.com'
       end
@@ -249,7 +250,7 @@ MESSAGE_END
     else
       puts "|Notifications_Warning_Skip| - #{Time.now}"
     end
-    notifications_warning = notifications_warning | [message]
+    $notifications_warning = $notifications_warning | [message]
   
   else
     info = ''
@@ -277,7 +278,7 @@ Packet capture:
 MESSAGE_END
 
 
-    unless notifications_critical.include?(message)
+    unless $notifications_critical.include?(message)
 
       Net::SMTP.start('out.vip.pod5.iad1.zdsys.com') do |smtp|
         smtp.send_message message, 'ddos@zendesk.com','healer@ddos.zendesk.com'
@@ -287,7 +288,7 @@ MESSAGE_END
     else
       puts "|Notifications_Critical_Skip| - #{Time.now}"
     end
-    notifications_critical = notifications_critical | [message]
+    $notifications_critical = $notifications_critical | [message]
   end
 
 end
