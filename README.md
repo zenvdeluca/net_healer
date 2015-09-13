@@ -36,8 +36,8 @@ Start with FNM ban time: 30 seconds (NET HEALER will converge from cleared to wa
 5. Populate `.env` with a config
 6. `$ bundle exec script/start`
 
-optional: Install Grafana for cool dashboard viz (https://github.com/grafana/grafana)
-
+### Install Grafana for cool dashboard viz (https://github.com/grafana/grafana)
+![alt tag](https://raw.githubusercontent.com/zenvdeluca/net_healer/master/repo_img/nethealer.png)
 
 ##How to query the API
 
