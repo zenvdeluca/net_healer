@@ -35,11 +35,11 @@ module AppConfig
     @smtp_from = ENV['NOTIFICATION_EMAIL_FROM'].to_i              
     @smtp_to = ENV['NOTIFICATION_EMAIL_TO'].to_i 
     
-    %i[@expire @warning @critical @action].each do |config_var|
+    %i[@smtp @smtp_from @smtp_to].each do |config_var|
       raise "NOTIFICATION misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
     end
     class << self
-      attr_reader :warning, :critical, :expire, :action
+      attr_reader :smtp, :smtp_from, :smtp_to
     end
   end
 
