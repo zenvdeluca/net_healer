@@ -91,10 +91,10 @@ class Healer
       # normalize bps => mbps
 
       aggregate.each do |k,v|
-        aggregate["#{k}"]['incoming']['total']['traffic'] = aggregate["#{k}"]['incoming']['total']['traffic'] / 1048576.0
-        aggregate["#{k}"]['incoming']['tcp']['traffic'] = aggregate["#{k}"]['incoming']['tcp']['traffic'] / 1048576.0
-        aggregate["#{k}"]['incoming']['udp']['traffic'] = aggregate["#{k}"]['incoming']['udp']['traffic'] / 1048576.0
-        aggregate["#{k}"]['incoming']['icmp']['traffic'] = aggregate["#{k}"]['incoming']['icmp']['traffic'] / 1048576.0
+        aggregate["#{k}"]['incoming']['total']['traffic'] = (aggregate["#{k}"]['incoming']['total']['traffic'] / 1048576.0).round(2)
+        aggregate["#{k}"]['incoming']['tcp']['traffic'] = (aggregate["#{k}"]['incoming']['tcp']['traffic'] / 1048576.0).round(2)
+        aggregate["#{k}"]['incoming']['udp']['traffic'] = (aggregate["#{k}"]['incoming']['udp']['traffic'] / 1048576.0).round(2)
+        aggregate["#{k}"]['incoming']['icmp']['traffic'] = (aggregate["#{k}"]['incoming']['icmp']['traffic'] / 1048576.0).round(2)
       end
       
         body({reports: aggregate, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
