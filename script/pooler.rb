@@ -236,8 +236,8 @@ scheduler.every '10s' do
     #top = top_talkers(10)
 
     message = <<MESSAGE_END
-From: DDoS Detection <nethealer@zendesk.com>
-To: Network Operations <healer@ddos.zendesk.com>
+From: DDoS Detection <#{AppConfig::NOTIFICATIONS.smtp_from}>
+To: Network Operations <#{AppConfig::NOTIFICATIONS.smtp_to}>
 Subject: [WARNING] - Possible DDoS - targets: #{info}
 
 Healer Dashboard: https://netmonitor.zdsys.com 
@@ -251,8 +251,8 @@ Packet capture:
 MESSAGE_END
 
     unless $notifications_warning.include?(message)
-      Net::SMTP.start('out.vip.pod5.iad1.zdsys.com') do |smtp|
-        smtp.send_message message, 'nethealer@zendesk.com','healer@ddos.zendesk.com'
+      Net::SMTP.start(AppConfig::NOTIFICATIONS.smtp) do |smtp|
+        smtp.send_message message, AppConfig::NOTIFICATIONS.smtp_from,AppConfig::NOTIFICATIONS.smtp_to
       end
       puts "|Notifications_Warning_Sent| - #{Time.now}"
     else
@@ -270,11 +270,11 @@ MESSAGE_END
     #top = top_talkers(10)
 
     message = <<MESSAGE_END
-From: DDoS Detection <nethealer@zendesk.com>
-To: Network Operations <healer@ddos.zendesk.com>
+From: DDoS Detection <#{AppConfig::NOTIFICATIONS.smtp_from}>
+To: Network Operations <#{AppConfig::NOTIFICATIONS.smtp_to}>
 Subject: [CRITICAL] - DDoS Attack - targets: #{info}
 
-Healer Dashboard: https://netmonitor.zdsys.com
+Healer Dashboard: https://#{AppConfig::NETHEALER.influxdb}
 
 Attack info:
 #{reports.to_yaml}
@@ -288,8 +288,8 @@ MESSAGE_END
 
     unless $notifications_critical.include?(message)
 
-      Net::SMTP.start('out.vip.pod5.iad1.zdsys.com') do |smtp|
-        smtp.send_message message, 'ddos@zendesk.com','healer@ddos.zendesk.com'
+      Net::SMTP.start(AppConfig::NOTIFICATIONS.smtp) do |smtp|
+        smtp.send_message message, AppConfig::NOTIFICATIONS.smtp_from,AppConfig::NOTIFICATIONS.smtp_to
       end
       puts "|Notifications_Critical_Sent| - #{Time.now}"
 

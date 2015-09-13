@@ -30,14 +30,26 @@ module AppConfig
     end
   end
 
+  class NOTIFICATIONS
+    @smtp = ENV['NOTIFICATION_EMAIL_SMTP'].to_i                
+    @smtp_from = ENV['NOTIFICATION_EMAIL_FROM'].to_i              
+    @smtp_to = ENV['NOTIFICATION_EMAIL_TO'].to_i 
+    
+    %i[@expire @warning @critical @action].each do |config_var|
+      raise "NOTIFICATION misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
+    end
+    class << self
+      attr_reader :warning, :critical, :expire, :action
+    end
+  end
+
+
+
   class JIRA
     @host = ENV['JIRA_HOSTNAME']
     @user = ENV['JIRA_USER']
     @password = ENV['JIRA_PASSWORD']
 
-    %i[@host @user @password].each do |config_var|
-      raise "JIRA misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
-    end
     class << self
       attr_reader :host, :user, :password
     end
@@ -47,9 +59,6 @@ module AppConfig
     @ops_flow = ENV['FLOWDOCK_OPS']
     @netops_notifications_flow = ENV['FLOWDOCK_NETOPS']
 
-    %i[@ops_flow @netops_notifications_flow].each do |config_var|
-      raise "Flowdock misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
-    end
     class << self
       attr_reader :ops_flow, :netops_notifications_flow
     end
