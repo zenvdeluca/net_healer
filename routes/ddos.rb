@@ -93,6 +93,7 @@ class Healer
       aggregate.each do |k,v|
         aggregate["#{k}"]['incoming']['total']['mbps'] = (aggregate["#{k}"]['incoming']['total']['mbps'] / 1048576.0).round(2)
         aggregate["#{k}"]['incoming']['tcp']['mbps'] = (aggregate["#{k}"]['incoming']['tcp']['mbps'] / 1048576.0).round(2)
+        aggregate["#{k}"]['incoming']['tcp']['syn']['mbps'] = (aggregate["#{k}"]['incoming']['tcp']['syn']['mbps'] / 1048576.0).round(2)
         aggregate["#{k}"]['incoming']['udp']['mbps'] = (aggregate["#{k}"]['incoming']['udp']['mbps'] / 1048576.0).round(2)
         aggregate["#{k}"]['incoming']['icmp']['mbps'] = (aggregate["#{k}"]['incoming']['icmp']['mbps'] / 1048576.0).round(2)
       end
