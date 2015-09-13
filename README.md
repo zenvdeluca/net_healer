@@ -8,8 +8,8 @@ NET HEALER centralizes DDoS Attack Reports from FastNetMon collectors, allowing 
 - critical - more than [x] Attack Reports received for /32 target(s)
 - under_attack - more than critical :)
 
-Each FNM ban = 1 NET HEALER /32 target report
-Lower the ban time, faster NET HEALER advance it stages
+Each FNM ban = 1 NET HEALER /32 target report<br>
+Lower the ban time, faster NET HEALER advance it stages<br>
 Suggested FNM ban time: 30 seconds (from cleared to warning 90 seconds)
 
 ## Actions
