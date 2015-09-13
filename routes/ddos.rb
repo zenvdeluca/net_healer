@@ -14,7 +14,8 @@ class Healer
     end
     grouped = queue.group_by {|report| report[:information]['ip']}
     
-    report = {}  
+    report = {}
+    puts grouped.to_json  
     grouped[:reports].each do |item|
       ip = item[:information]['ip']
       report["#{ip}"] = {}
