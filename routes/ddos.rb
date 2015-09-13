@@ -23,10 +23,18 @@ class Healer
       pattern = '*' + Time.now.strftime("%Y") + '*'
       namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
       reports = report_initializer(current)
+
+      aggregate = {} 
+      reports.each do |target|
+        ip = target[:information]['ip']
+        aggregate["#{ip}"] = {}
+      end
+      
+
       unless reports
         body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
       else
-        body({reports: reports, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
+        body({reports: aggregate, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
       end
     end
 
