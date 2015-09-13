@@ -31,9 +31,9 @@ module AppConfig
   end
 
   class NOTIFICATIONS
-    @smtp = ENV['NOTIFICATION_EMAIL_SMTP'].to_i                
-    @smtp_from = ENV['NOTIFICATION_EMAIL_FROM'].to_i              
-    @smtp_to = ENV['NOTIFICATION_EMAIL_TO'].to_i 
+    @smtp = ENV['NOTIFICATION_EMAIL_SMTP']                
+    @smtp_from = ENV['NOTIFICATION_EMAIL_FROM']              
+    @smtp_to = ENV['NOTIFICATION_EMAIL_TO'] 
     
     %i[@smtp @smtp_from @smtp_to].each do |config_var|
       raise "NOTIFICATION misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
