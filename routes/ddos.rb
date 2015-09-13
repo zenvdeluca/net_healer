@@ -91,10 +91,10 @@ class Healer
       # normalize bps => mbps
 
       aggregate.each do |k,v|
-        puts aggregate["#{k}"]['incoming']['total']['traffic']
-        #item['incoming']['tcp']['traffic'] = item['incoming']['tcp']['traffic'].to_i / 1048576
-        #item['incoming']['udp']['traffic'] = item['incoming']['udp']['traffic'].to_i / 1048576
-        #item['incoming']['icmp']['traffic'] = item['incoming']['icmp']['traffic'].total_incoming_flows / 1048576
+        aggregate["#{k}"]['incoming']['total']['traffic'] = aggregate["#{k}"]['incoming']['total']['traffic'] / 1048576
+        aggregate["#{k}"]['incoming']['tcp']['traffic'] = aggregate["#{k}"]['incoming']['tcp']['traffic'] / 1048576
+        aggregate["#{k}"]['incoming']['udp']['traffic'] = aggregate["#{k}"]['incoming']['udp']['traffic'] / 1048576
+        aggregate["#{k}"]['incoming']['icmp']['traffic'] = aggregate["#{k}"]['incoming']['icmp']['traffic'] / 1048576
       end
       
         body({reports: aggregate, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
