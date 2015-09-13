@@ -225,13 +225,13 @@ scheduler.every '10s' do
     capture = {}
     reports.each { |k,v| capture["#{k}"] = v.delete('capture') }
     #top = top_talkers(10)
-    
+
     message = <<MESSAGE_END
 From: DDoS Detection <nethealer@zendesk.com>
 To: Network Operations <healer@ddos.zendesk.com>
 Subject: [WARNING] - Possible DDoS - targets: #{info}
 
-Healer Dashboard: http://netmonitor.zdsys.com 
+Healer Dashboard: https://netmonitor.zdsys.com 
 
 Attack info:
 #{reports.to_yaml}
@@ -265,7 +265,7 @@ From: DDoS Detection <nethealer@zendesk.com>
 To: Network Operations <healer@ddos.zendesk.com>
 Subject: [CRITICAL] - DDoS Attack - targets: #{info}
 
-Healer Dashboard: http://netmonitor.zdsys.com
+Healer Dashboard: https://netmonitor.zdsys.com
 
 Attack info:
 #{reports.to_yaml}
