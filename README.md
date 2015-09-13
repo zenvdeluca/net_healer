@@ -24,7 +24,7 @@ Start with FNM ban time: 30 seconds (NET HEALER will converge from cleared to wa
 - Redis (https://github.com/antirez/redis)
 - InfluxDB (https://github.com/influxdb/influxdb)
 - Grafana (https://github.com/grafana/grafana)
-- 
+
 ##Installation
 0. FastNetMon (FNM) should be configured to use:
  - Redis (https://github.com/FastVPSEestiOu/fastnetmon/blob/master/docs/REDIS.md)
@@ -41,7 +41,7 @@ optional: Install Grafana for cool dashboard viz (https://github.com/grafana/gra
 
 ##How to query the API
 
-### GET /healer/v1/ddos/status => query DDoS status
+### GET /healer/v1/ddos/status
 ```
 {
   "status": "clear",
@@ -49,7 +49,7 @@ optional: Install Grafana for cool dashboard viz (https://github.com/grafana/gra
 }
 ```
 
-### GET /healer/v1/ddos/reports => query current DDoS reports
+### GET /healer/v1/ddos/reports
 
 ```json
 {
@@ -89,10 +89,11 @@ optional: Install Grafana for cool dashboard viz (https://github.com/grafana/gra
 }
 ```
 
-### GET /healer/v1/ddos/reports/capture => query current DDoS reports + packet capture
+### GET /healer/v1/ddos/reports/capture
+=> query current DDoS reports + packet capture
 
-### GET /healer/v1/ddos/brief => query DDoS /32 targets brief
+### GET /healer/v1/ddos/brief 
+=> query DDoS /32 targets brief
 
-### WORK IN PROGRESS.
-
-PRs are more than welcome !
+### WORK IN PROGRESS
+=> PRs are more than welcome !
