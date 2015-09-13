@@ -36,7 +36,7 @@ Start with FNM ban time: 30 seconds (NET HEALER will converge from cleared to wa
 5. Populate `.env` with a config
 6. `$ bundle exec script/start`
 
-### Screenshot during an attack
+## Screenshot during an attack
 ![alt tag](https://raw.githubusercontent.com/zenvdeluca/net_healer/master/img/nethealer.png)
 
 ##How to query the API
