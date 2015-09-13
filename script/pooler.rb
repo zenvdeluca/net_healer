@@ -225,13 +225,13 @@ scheduler.every '10s' do
     capture = {}
     reports.each { |k,v| capture["#{k}"] = v.delete('capture') }
     #top = top_talkers(10)
-
+    
     message = <<MESSAGE_END
 From: DDoS Detection <nethealer@zendesk.com>
 To: Network Operations <healer@ddos.zendesk.com>
 Subject: [WARNING] - Possible DDoS - targets: #{info}
 
-<a href="http://netmonitor.zdsys.com">Follow via Healer Dashboard</a>
+Healer Dashboard: http://netmonitor.zdsys.com 
 
 Attack info:
 #{reports.to_yaml}
@@ -239,22 +239,18 @@ Attack info:
 Packet capture:
 #{capture.to_yaml}
 
-
 MESSAGE_END
 
-
     unless notifications_warning.include?(message)
-
       Net::SMTP.start('out.vip.pod5.iad1.zdsys.com') do |smtp|
         smtp.send_message message, 'nethealer@zendesk.com','healer@ddos.zendesk.com'
       end
       puts "|Notifications_Warning_Sent| - #{Time.now}"
-
     else
       puts "|Notifications_Warning_Skip| - #{Time.now}"
     end
     notifications_warning = notifications_warning | [message]
-
+  
   else
     info = ''
     response['target'].map {|k,v| info = info + "|#{k}"}
@@ -269,7 +265,7 @@ From: DDoS Detection <nethealer@zendesk.com>
 To: Network Operations <healer@ddos.zendesk.com>
 Subject: [CRITICAL] - DDoS Attack - targets: #{info}
 
-<a href="http://netmonitor.zdsys.com">Follow via Healer Dashboard</a>
+Healer Dashboard: http://netmonitor.zdsys.com
 
 Attack info:
 #{reports.to_yaml}
