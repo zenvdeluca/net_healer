@@ -56,19 +56,11 @@ class Healer
           aggregate["#{k}"]['attack_type'] = 'unknown' && item[:information]['attack_details']['attack_type']
           aggregate["#{k}"]['direction'] = item[:information]['attack_details']['attack_direction']
           aggregate["#{k}"]['protocol'] = aggregate["#{k}"]['protocol'] | [item[:information]['attack_details']['attack_protocol']]
-          aggregate["#{k}"]['total']['incoming']['traffic'] = [aggregate["#{k}"]['total']['incoming']['traffic'],item[:information]['attack_details']['total_incoming_traffic']].max
-          aggregate["#{k}"]['total']['incoming']['pps'] = [aggregate["#{k}"]['incoming']['total']['pps'],item[:information]['attack_details']['total_incoming_pps']].max
-          aggregate["#{k}"]['total']['incoming']['flows'] = [aggregate["#{k}"]['incoming']['total']['flows'],item[:information]['attack_details']['total_incoming_flows']].max
-          
-
-          
+          aggregate["#{k}"]['incoming']['total']['traffic'] = [aggregate["#{k}"]['incoming']['total']['traffic'],item[:information]['attack_details']['total_incoming_traffic']].max
+          aggregate["#{k}"]['incoming']['total']['pps'] = [aggregate["#{k}"]['incoming']['total']['pps'],item[:information]['attack_details']['total_incoming_pps']].max
+          aggregate["#{k}"]['incoming']['total']['flows'] = [aggregate["#{k}"]['incoming']['total']['flows'],item[:information]['attack_details']['total_incoming_flows']].max
         end
       end
-
-
-
-      end
-      
 
       unless reports
         body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
