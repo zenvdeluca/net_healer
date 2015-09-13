@@ -25,9 +25,48 @@ class Healer
       reports = report_initializer(current)
 
       aggregate = {} 
-      reports.each do |target|
-        ip = target[:information]['ip']
-        aggregate["#{ip}"] = {}
+      reports.each do |k,v|
+        aggregate["#{k}"] = {}
+        aggregate["#{k}"]['protocol'] = []
+        aggregate["#{k}"]['incoming'] = {}
+
+        aggregate["#{k}"]['incoming']['total'] = {}
+        aggregate["#{k}"]['incoming']['total']['traffic'] = 0
+        aggregate["#{k}"]['incoming']['total']['pps'] = 0
+        aggregate["#{k}"]['incoming']['total']['flows'] = 0
+
+        aggregate["#{k}"]['incoming']['tcp'] = {}
+        aggregate["#{k}"]['incoming']['tcp']['traffic'] = 0
+        aggregate["#{k}"]['incoming']['tcp']['pps'] = 0
+        aggregate["#{k}"]['incoming']['tcp']['syn'] = {}
+        aggregate["#{k}"]['incoming']['tcp']['syn']['traffic'] = 0
+        aggregate["#{k}"]['incoming']['tcp']['syn']['pps'] = 0
+
+        aggregate["#{k}"]['incoming']['udp'] = {}
+        aggregate["#{k}"]['incoming']['udp']['traffic'] = 0
+        aggregate["#{k}"]['incoming']['udp']['pps'] = 0
+      
+        aggregate["#{k}"]['incoming']['icmp'] = {}
+        aggregate["#{k}"]['incoming']['icmp']['traffic'] = 0
+        aggregate["#{k}"]['incoming']['icmp']['pps'] = 0
+      
+       
+
+        reports["#{k}"].each do |item|
+          aggregate["#{k}"]['attack_type'] = 'unknown' && item[:information]['attack_details']['attack_type']
+          aggregate["#{k}"]['direction'] = item[:information]['attack_details']['attack_direction']
+          aggregate["#{k}"]['protocol'] = aggregate["#{k}"]['protocol'] | [item[:information]['attack_details']['attack_protocol']]
+          aggregate["#{k}"]['total']['incoming']['traffic'] = [aggregate["#{k}"]['total']['incoming']['traffic'],item[:information]['attack_details']['total_incoming_traffic']].max
+          aggregate["#{k}"]['total']['incoming']['pps'] = [aggregate["#{k}"]['incoming']['total']['pps'],item[:information]['attack_details']['total_incoming_pps']].max
+          aggregate["#{k}"]['total']['incoming']['flows'] = [aggregate["#{k}"]['incoming']['total']['flows'],item[:information]['attack_details']['total_incoming_flows']].max
+          
+
+          
+        end
+      end
+
+
+
       end
       
 
