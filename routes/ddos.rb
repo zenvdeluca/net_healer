@@ -1,6 +1,7 @@
 require 'redis'
 require 'redis-namespace'
 require 'uri'
+require 'resolv'
 
 class Healer
   redis_server=AppConfig::NETHEALER.server
@@ -31,6 +32,9 @@ class Healer
       aggregate = {} 
       reports.each do |k,v|
         aggregate["#{k}"] = {}
+        begin
+          aggregate["#{k}"]['target'] = Resolv.new.getname(k)
+        end 
         aggregate["#{k}"]['detected'] = 0
         aggregate["#{k}"]['protocol'] = []
         aggregate["#{k}"]['incoming'] = {}
