@@ -70,7 +70,7 @@ class Healer
         reports["#{k}"].each do |item|
           aggregate["#{k}"]['alerts'] += 1
           aggregate["#{k}"]['attack_type'] = 'unknown' && item[:information]['attack_details']['attack_type']
-          aggregate["#{k}"]['direction'] = item[:information]['attack_details']['attack_direction']
+          #aggregate["#{k}"]['direction'] = item[:information]['attack_details']['attack_direction']
           aggregate["#{k}"]['protocol'] = aggregate["#{k}"]['protocol'] | [item[:information]['attack_details']['attack_protocol']]
         
           aggregate["#{k}"]['incoming']['total']['mbps'] = [aggregate["#{k}"]['incoming']['total']['mbps'],item[:information]['attack_details']['total_incoming_traffic']].max
