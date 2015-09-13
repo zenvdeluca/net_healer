@@ -117,6 +117,13 @@ def top_talkers(num)
   top
 end
 
+
+#
+# Schedulers
+#
+
+# watch redis for FastNetMon Attack Reports. Parse and Feed to NET HEALER
+
 scheduler.every '5s' do
   current = []
   pattern = '*_packets_dump'
@@ -149,7 +156,7 @@ scheduler.every '5s' do
 end
 
 
-# Query nethealer API for Graph vertical markdown. warning[yellow] & critical[red]
+# Graph vertical markdown. NET HEALER API query - Grafana: warning[yellow] & critical[red]
 
 last_data = nil
 data = ''
@@ -187,7 +194,7 @@ scheduler.every '5s' do
 
 end
 
-# Calculate in/out bps ratio -- consider refactor/moving to netmon
+# Calculate in/out bps ratio -- consider refactor
 
 scheduler.every '5s' do
   total_bps = $influxdb_graphite.query "select last(value) from total where resource = 'bps' group by direction,resource"
@@ -203,8 +210,9 @@ scheduler.every '5s' do
 end
 
 
-
-# Notifications
+#
+# Notification schedulers
+#
 
 $notifications_warning = []
 $notifications_critical = []
