@@ -231,6 +231,8 @@ From: DDoS Detection <no-reply@zendesk.com>
 To: Network Operations <vdeluca@zendesk.com>
 Subject: [WARNING] - Possible DDoS - targets: #{info}
 
+<a href="http://netmonitor.zdsys.com">Follow via Healer Dashboard</a>
+
 Attack info:
 #{reports.to_yaml}
 
@@ -266,6 +268,8 @@ MESSAGE_END
 From: DDoS Detection <no-reply@zendesk.com>
 To: Network Operations <vdeluca@zendesk.com>
 Subject: [CRITICAL] - DDoS Attack - targets: #{info}
+
+<a href="http://netmonitor.zdsys.com">Follow via Healer Dashboard</a>
 
 Attack info:
 #{reports.to_yaml}
