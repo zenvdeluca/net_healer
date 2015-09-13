@@ -63,10 +63,6 @@ class Healer
 
         aggregate["#{k}"]['capture'] = [] if params[:p1] == 'capture'
 
-
-      
-       
-
         reports["#{k}"].each do |item|
           aggregate["#{k}"]['alerts'] += 1
           aggregate["#{k}"]['attack_type'] = 'unknown' && item[:information]['attack_details']['attack_type']
