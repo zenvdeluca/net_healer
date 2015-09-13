@@ -7,6 +7,7 @@ require 'dotenv'
 require 'rest-client'
 require 'influxdb'
 require 'net/smtp'
+require 'yaml'
 
 Dotenv.load
 require_relative '../app_config'
@@ -220,7 +221,11 @@ scheduler.every '10s' do
     puts "|Notifications_Warning| - #{Time.now}"
     info = ''
     response['target'].map {|k,v| info = info + "|#{k}"}
-    reports = healer['ddos/reports/capture'].get
+    reports = JSON.parse(healer['ddos/reports/capture'].get)
+    reports = reports['reports']
+    capture = {}
+    reports.each { |k,v| capture["#{k}"] = v.delete('capture') }
+    top = top_talkers(10)
 
     message = <<MESSAGE_END
 From: DDoS Detection <no-reply@zendesk.com>
@@ -228,7 +233,13 @@ To: Network Operations <vdeluca@zendesk.com>
 Subject: [WARNING] - Possible DDoS - targets: #{info}
 
 Attack info:
-#{reports}
+#{reports.to_yaml}
+
+TOP Talkers:
+#{top.to_yaml}
+
+Packet capture:
+#{capture.to_yaml}
 
 
 MESSAGE_END
