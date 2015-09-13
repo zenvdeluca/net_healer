@@ -24,6 +24,10 @@ class Healer
       namespaced_current.scan_each(:match => pattern) {|key| current << eval(namespaced_current.get(key)) }
       reports = report_initializer(current)
 
+      unless reports
+        body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
+      else
+
       aggregate = {} 
       reports.each do |k,v|
         aggregate["#{k}"] = {}
@@ -62,9 +66,7 @@ class Healer
         end
       end
 
-      unless reports
-        body({status: 'clear', timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
-      else
+      
         body({reports: aggregate, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
       end
     end
