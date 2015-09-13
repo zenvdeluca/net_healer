@@ -31,6 +31,7 @@ class Healer
       aggregate = {} 
       reports.each do |k,v|
         aggregate["#{k}"] = {}
+        aggregate["#{k}"]['detected'] = 0
         aggregate["#{k}"]['protocol'] = []
         aggregate["#{k}"]['incoming'] = {}
 
@@ -57,6 +58,7 @@ class Healer
        
 
         reports["#{k}"].each do |item|
+          aggregate["#{k}"]['detected'] += 1
           aggregate["#{k}"]['attack_type'] = 'unknown' && item[:information]['attack_details']['attack_type']
           aggregate["#{k}"]['direction'] = item[:information]['attack_details']['attack_direction']
           aggregate["#{k}"]['protocol'] = aggregate["#{k}"]['protocol'] | [item[:information]['attack_details']['attack_protocol']]
