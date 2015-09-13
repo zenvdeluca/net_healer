@@ -52,6 +52,7 @@ def parse_fastnetmon_redis(payloads_raw)
   payloads_raw.each do |key,value|
     begin
       info = JSON.parse(payloads_raw[key][:information])
+      next if info["attack_details"]["attack_direction"] == 'outgoing' # ignore fastnetmon outgoing alerts
       flow_dump = payloads_raw[key][:flow_dump].split("\n").reject! { |l| l.empty? } unless payloads_raw[key][:flow_dump].nil?
       packets_dump = payloads_raw[key][:packets_dump].split("\n").reject! { |l| l.empty? || !l.include?('sample')} unless payloads_raw[key][:packets_dump].nil?
 
@@ -103,7 +104,15 @@ def gc_fastnetmon_redis
   return true
 end
 
-
+def top_talkers(num)
+  top = []
+  top_talkers = influxdb_graphite.query "select top(value, cidr, #{num}) from hosts where direction = 'incoming' and resource = 'bps' group by time"
+  top_talkers.first["values"].each do |talker|
+    next if ( talker["cidr"] =~ /192_161_152_14[4-9]/ ) || ( talker["cidr"] =~ /192_161_152_15[1-9]/ )
+    top << { ipv4: talker["cidr"], bps: talker["top"] }
+  end
+  top
+end
 
 scheduler.every '5s' do
   current = []
@@ -137,7 +146,7 @@ scheduler.every '5s' do
 end
 
 
-# Graph markdown
+# Query nethealer API for Graph vertical markdown. warning[yellow] & critical[red]
 
 last_data = nil
 data = ''
@@ -175,7 +184,9 @@ scheduler.every '5s' do
 
 end
 
-scheduler.every '1s' do
+# Calculate in/out bps ratio -- consider refactor/moving to netmon
+
+scheduler.every '5s' do
   total_bps = influxdb_graphite.query "select last(value) from total where resource = 'bps' group by direction,resource"
   ratio_bps = total_bps[0]['values'].first['last'].to_f / total_bps[1]['values'].first['last'].to_f
   payload_bps = { values: { info: ratio_bps } }
@@ -187,5 +198,7 @@ scheduler.every '1s' do
   influxdb_events.write_point('ratio_bps', payload_bps)
   influxdb_events.write_point('ratio_pps', payload_pps)
 end
+
+
 
 scheduler.join
