@@ -60,9 +60,24 @@ class Healer
           aggregate["#{k}"]['attack_type'] = 'unknown' && item[:information]['attack_details']['attack_type']
           aggregate["#{k}"]['direction'] = item[:information]['attack_details']['attack_direction']
           aggregate["#{k}"]['protocol'] = aggregate["#{k}"]['protocol'] | [item[:information]['attack_details']['attack_protocol']]
+        
           aggregate["#{k}"]['incoming']['total']['traffic'] = [aggregate["#{k}"]['incoming']['total']['traffic'],item[:information]['attack_details']['total_incoming_traffic']].max
           aggregate["#{k}"]['incoming']['total']['pps'] = [aggregate["#{k}"]['incoming']['total']['pps'],item[:information]['attack_details']['total_incoming_pps']].max
           aggregate["#{k}"]['incoming']['total']['flows'] = [aggregate["#{k}"]['incoming']['total']['flows'],item[:information]['attack_details']['total_incoming_flows']].max
+        
+
+          aggregate["#{k}"]['incoming']['tcp']['traffic'] = [aggregate["#{k}"]['incoming']['tcp']['traffic'],item[:information]['attack_details']['incoming_tcp_traffic']].max
+          aggregate["#{k}"]['incoming']['tcp']['pps'] = [aggregate["#{k}"]['incoming']['tcp']['pps'],item[:information]['attack_details']['incoming_tcp_pps']].max
+          aggregate["#{k}"]['incoming']['tcp']['syn']['traffic'] = [aggregate["#{k}"]['incoming']['tcp']['syn']['traffic'],item[:information]['attack_details']['incoming_syn_tcp_traffic']].max
+          aggregate["#{k}"]['incoming']['tcp']['syn']['pps'] = [aggregate["#{k}"]['incoming']['tcp']['syn']['pps'],item[:information]['attack_details']['incoming_syn_tcp_pps']].max
+          
+          aggregate["#{k}"]['incoming']['udp']['traffic'] = [aggregate["#{k}"]['incoming']['udp']['traffic'],item[:information]['attack_details']['incoming_udp_traffic']].max
+          aggregate["#{k}"]['incoming']['udp']['pps'] = [aggregate["#{k}"]['incoming']['udp']['pps'],item[:information]['attack_details']['incoming_udp_pps']].max
+          
+          aggregate["#{k}"]['incoming']['icmp']['traffic'] = [aggregate["#{k}"]['incoming']['icmp']['traffic'],item[:information]['attack_details']['incoming_icmp_traffic']].max
+          aggregate["#{k}"]['incoming']['icmp']['pps'] = [aggregate["#{k}"]['incoming']['icmp']['pps'],item[:information]['attack_details']['incoming_icmp_pps']].max
+          
+
         end
       end
 
