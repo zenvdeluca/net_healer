@@ -63,9 +63,9 @@ Start with FNM ban time: 30 seconds (NET HEALER will converge from cleared to wa
             ],
             "incoming": {
                 "total": {
-                    "mbps": 0.96,
-                    "pps": 1486,
-                    "flows": 128
+                    "mbps": 2894.96,
+                    "pps": 781380,
+                    "flows": 628
                 },
                 "tcp": {
                     "mbps": 1.71,
