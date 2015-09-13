@@ -34,6 +34,8 @@ class Healer
         aggregate["#{k}"] = {}
         begin
           aggregate["#{k}"]['target'] = Resolv.new.getname(k)
+        rescue
+           aggregate["#{k}"]['target'] = 'no reverse dns for #{k}'
         end 
         aggregate["#{k}"]['alerts'] = 0
         aggregate["#{k}"]['protocol'] = []

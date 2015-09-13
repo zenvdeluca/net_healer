@@ -6,6 +6,7 @@ require 'json'
 require 'dotenv'
 require 'rest-client'
 require 'influxdb'
+require 'net/smtp'
 
 Dotenv.load
 require_relative '../app_config'
@@ -197,6 +198,52 @@ scheduler.every '5s' do
 
   influxdb_events.write_point('ratio_bps', payload_bps)
   influxdb_events.write_point('ratio_pps', payload_pps)
+end
+
+
+
+# Notifications
+
+notifications_warning = []
+notifications_critical = []
+
+scheduler.every '10s' do
+  response = JSON.parse(healer['ddos/status'].get)
+  status = response['status']
+  target = response['target']
+
+  case status
+  when 'clear'
+    print '!'
+
+  when 'warning'
+    puts "|Notifications_Warning| - #{Time.now}"
+    info = ''
+    response['target'].map {|k,v| info = info + "|#{k}"}
+    reports = healer['ddos/reports/capture'].get
+
+    message = <<MESSAGE_END
+From: DDoS Detection <no-reply@zendesk.com>
+To: Network Operations <vdeluca@zendesk.com>
+Subject: [WARNING] - Possible DDoS - targets: #{info}
+
+Attack info:
+#{reports}
+
+
+MESSAGE_END
+
+    Net::SMTP.start('out.vip.pod5.iad1.zdsys.com') do |smtp|
+      smtp.send_message message, 'ddos@zendesk.com','vdeluca@zendesk.com'
+    end
+
+
+  else
+    puts "|Attack| - #{Time.now}"
+    info = ''
+    response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
+  end
+
 end
 
 
