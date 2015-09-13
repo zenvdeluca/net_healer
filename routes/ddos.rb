@@ -12,19 +12,7 @@ class Healer
     if queue.empty?
       return false
     end
-    grouped = queue.group_by {|report| report[:information]['ip']}
-    
-    report = {}
-
-    grouped.each do |target|
-      ip = target[:information]['ip']
-      report["#{ip}"] = {}  
-      target.each do 
-        report["#{ip}"]['site'] = item['site']
-      end
-    end
-    report
-
+    return queue.group_by {|report| report[:information]['ip']}
   end
 
 
