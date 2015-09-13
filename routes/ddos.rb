@@ -33,9 +33,9 @@ class Healer
       reports.each do |k,v|
         aggregate["#{k}"] = {}
         begin
-          aggregate["#{k}"]['target'] = Resolv.new.getname(k)
+          aggregate["#{k}"]['fqdn'] = Resolv.new.getname(k)
         rescue
-           aggregate["#{k}"]['target'] = 'no reverse dns for #{k}'
+          aggregate["#{k}"]['fqdn'] = 'no.reverse.dns'
         end 
         aggregate["#{k}"]['alerts'] = 0
         aggregate["#{k}"]['protocol'] = []
