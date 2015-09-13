@@ -240,16 +240,54 @@ Packet capture:
 
 MESSAGE_END
 
-    Net::SMTP.start('out.vip.pod5.iad1.zdsys.com') do |smtp|
-      smtp.send_message message, 'ddos@zendesk.com','vdeluca@zendesk.com'
+
+    unless notifications_warning.include?(message)
+
+      Net::SMTP.start('out.vip.pod5.iad1.zdsys.com') do |smtp|
+        smtp.send_message message, 'ddos@zendesk.com','vdeluca@zendesk.com'
+      end
+      puts "|Notifications_Warning_Sent| - #{Time.now}"
+
+    else
+      puts "|Notifications_Warning_Skip| - #{Time.now}"
     end
-    puts "|Notifications_Warning_Sent| - #{Time.now}"
-    
+    notifications_warning = notifications_warning | [message]
 
   else
-    puts "|Attack| - #{Time.now}"
     info = ''
-    response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
+    response['target'].map {|k,v| info = info + "|#{k}"}
+    reports = JSON.parse(healer['ddos/reports/capture'].get)
+    reports = reports['reports']
+    capture = {}
+    reports.each { |k,v| capture["#{k}"] = v.delete('capture') }
+    #top = top_talkers(10)
+
+    message = <<MESSAGE_END
+From: DDoS Detection <no-reply@zendesk.com>
+To: Network Operations <vdeluca@zendesk.com>
+Subject: [CRITICAL] - DDoS Attack - targets: #{info}
+
+Attack info:
+#{reports.to_yaml}
+
+Packet capture:
+#{capture.to_yaml}
+
+
+MESSAGE_END
+
+
+    unless notifications_critical.include?(message)
+
+      Net::SMTP.start('out.vip.pod5.iad1.zdsys.com') do |smtp|
+        smtp.send_message message, 'ddos@zendesk.com','vdeluca@zendesk.com'
+      end
+      puts "|Notifications_Critical_Sent| - #{Time.now}"
+
+    else
+      puts "|Notifications_Critical_Skip| - #{Time.now}"
+    end
+    notifications_critical = notifications_critical | [message]
   end
 
 end
