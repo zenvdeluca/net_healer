@@ -89,7 +89,12 @@ class Healer
           aggregate["#{k}"]['incoming']['icmp']['mbps'] = [aggregate["#{k}"]['incoming']['icmp']['mbps'],item[:information]['attack_details']['incoming_icmp_traffic']].max
           aggregate["#{k}"]['incoming']['icmp']['pps'] = [aggregate["#{k}"]['incoming']['icmp']['pps'],item[:information]['attack_details']['incoming_icmp_pps']].max
 
-          item[:packets_dump].each { |pcap_line| aggregate["#{k}"]['capture'] << pcap_line } if params[:p1] == 'capture'
+          if params[:p1] == 'capture'
+            begin
+              item[:packets_dump].each { |pcap_line| aggregate["#{k}"]['capture'] << pcap_line } 
+            rescue
+            end
+          end
 
         end
       end
