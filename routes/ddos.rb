@@ -21,6 +21,7 @@ class Healer
       report["#{ip}"] = {}  
       target.each do 
         report["#{ip}"]['site'] = item['site']
+      end
     end
     report
 
