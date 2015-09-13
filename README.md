@@ -6,7 +6,7 @@ NET HEALER centralizes DDoS Attack Reports from FastNetMon collectors, allowing 
 - cleared - no Attack Reports received for any /32 target
 - warning - less than 3 Attack Reports received for /32 target(s)
 - critical - more than [x] Attack Reports received for /32 target(s)
-- under_attack - Notify and enable DDoS mitigation
+- under_attack - more than critical :)
 
 Each FNM ban = 1 NET HEALER /32 target report
 Lower the ban time, faster NET HEALER advance it stages
