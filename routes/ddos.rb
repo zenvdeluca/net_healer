@@ -58,11 +58,7 @@ class Healer
        
 
         reports["#{k}"].each do |item|
-          aggregate["#{k}"]['detected'] += 1
-          aggregate["#{k}"]['attack_type'] = 'unknown' && item[:information]['attack_details']['attack_type']
-          aggregate["#{k}"]['direction'] = item[:information]['attack_details']['attack_direction']
-          aggregate["#{k}"]['protocol'] = aggregate["#{k}"]['protocol'] | [item[:information]['attack_details']['attack_protocol']]
-        
+
           aggregate["#{k}"]['incoming']['total']['traffic'] = [aggregate["#{k}"]['incoming']['total']['traffic'],item[:information]['attack_details']['total_incoming_traffic']].max
           aggregate["#{k}"]['incoming']['total']['pps'] = [aggregate["#{k}"]['incoming']['total']['pps'],item[:information]['attack_details']['total_incoming_pps']].max
           aggregate["#{k}"]['incoming']['total']['flows'] = [aggregate["#{k}"]['incoming']['total']['flows'],item[:information]['attack_details']['total_incoming_flows']].max
@@ -79,6 +75,11 @@ class Healer
           aggregate["#{k}"]['incoming']['icmp']['traffic'] = [aggregate["#{k}"]['incoming']['icmp']['traffic'],item[:information]['attack_details']['incoming_icmp_traffic']].max
           aggregate["#{k}"]['incoming']['icmp']['pps'] = [aggregate["#{k}"]['incoming']['icmp']['pps'],item[:information]['attack_details']['incoming_icmp_pps']].max
           
+          aggregate["#{k}"]['detected'] += 1
+          aggregate["#{k}"]['attack_type'] = 'unknown' && item[:information]['attack_details']['attack_type']
+          aggregate["#{k}"]['direction'] = item[:information]['attack_details']['attack_direction']
+          aggregate["#{k}"]['protocol'] = aggregate["#{k}"]['protocol'] | [item[:information]['attack_details']['attack_protocol']]
+        
 
         end
       end
