@@ -36,23 +36,23 @@ class Healer
         aggregate["#{k}"]['incoming'] = {}
 
         aggregate["#{k}"]['incoming']['total'] = {}
-        aggregate["#{k}"]['incoming']['total']['traffic'] = 0
+        aggregate["#{k}"]['incoming']['total']['mbps'] = 0
         aggregate["#{k}"]['incoming']['total']['pps'] = 0
         aggregate["#{k}"]['incoming']['total']['flows'] = 0
 
         aggregate["#{k}"]['incoming']['tcp'] = {}
-        aggregate["#{k}"]['incoming']['tcp']['traffic'] = 0
+        aggregate["#{k}"]['incoming']['tcp']['mbps'] = 0
         aggregate["#{k}"]['incoming']['tcp']['pps'] = 0
         aggregate["#{k}"]['incoming']['tcp']['syn'] = {}
-        aggregate["#{k}"]['incoming']['tcp']['syn']['traffic'] = 0
+        aggregate["#{k}"]['incoming']['tcp']['syn']['mbps'] = 0
         aggregate["#{k}"]['incoming']['tcp']['syn']['pps'] = 0
 
         aggregate["#{k}"]['incoming']['udp'] = {}
-        aggregate["#{k}"]['incoming']['udp']['traffic'] = 0
+        aggregate["#{k}"]['incoming']['udp']['mbps'] = 0
         aggregate["#{k}"]['incoming']['udp']['pps'] = 0
       
         aggregate["#{k}"]['incoming']['icmp'] = {}
-        aggregate["#{k}"]['incoming']['icmp']['traffic'] = 0
+        aggregate["#{k}"]['incoming']['icmp']['mbps'] = 0
         aggregate["#{k}"]['incoming']['icmp']['pps'] = 0
 
         aggregate["#{k}"]['capture'] = [] if params[:p1] == 'capture'
@@ -67,20 +67,20 @@ class Healer
           aggregate["#{k}"]['direction'] = item[:information]['attack_details']['attack_direction']
           aggregate["#{k}"]['protocol'] = aggregate["#{k}"]['protocol'] | [item[:information]['attack_details']['attack_protocol']]
         
-          aggregate["#{k}"]['incoming']['total']['traffic'] = [aggregate["#{k}"]['incoming']['total']['traffic'],item[:information]['attack_details']['total_incoming_traffic']].max
+          aggregate["#{k}"]['incoming']['total']['mbps'] = [aggregate["#{k}"]['incoming']['total']['mbps'],item[:information]['attack_details']['total_incoming_traffic']].max
           aggregate["#{k}"]['incoming']['total']['pps'] = [aggregate["#{k}"]['incoming']['total']['pps'],item[:information]['attack_details']['total_incoming_pps']].max
           aggregate["#{k}"]['incoming']['total']['flows'] = [aggregate["#{k}"]['incoming']['total']['flows'],item[:information]['attack_details']['total_incoming_flows']].max
         
 
-          aggregate["#{k}"]['incoming']['tcp']['traffic'] = [aggregate["#{k}"]['incoming']['tcp']['traffic'],item[:information]['attack_details']['incoming_tcp_traffic']].max
+          aggregate["#{k}"]['incoming']['tcp']['mbps'] = [aggregate["#{k}"]['incoming']['tcp']['mbps'],item[:information]['attack_details']['incoming_tcp_traffic']].max
           aggregate["#{k}"]['incoming']['tcp']['pps'] = [aggregate["#{k}"]['incoming']['tcp']['pps'],item[:information]['attack_details']['incoming_tcp_pps']].max
-          aggregate["#{k}"]['incoming']['tcp']['syn']['traffic'] = [aggregate["#{k}"]['incoming']['tcp']['syn']['traffic'],item[:information]['attack_details']['incoming_syn_tcp_traffic']].max
+          aggregate["#{k}"]['incoming']['tcp']['syn']['mbps'] = [aggregate["#{k}"]['incoming']['tcp']['syn']['mbps'],item[:information]['attack_details']['incoming_syn_tcp_traffic']].max
           aggregate["#{k}"]['incoming']['tcp']['syn']['pps'] = [aggregate["#{k}"]['incoming']['tcp']['syn']['pps'],item[:information]['attack_details']['incoming_syn_tcp_pps']].max
           
-          aggregate["#{k}"]['incoming']['udp']['traffic'] = [aggregate["#{k}"]['incoming']['udp']['traffic'],item[:information]['attack_details']['incoming_udp_traffic']].max
+          aggregate["#{k}"]['incoming']['udp']['mbps'] = [aggregate["#{k}"]['incoming']['udp']['mbps'],item[:information]['attack_details']['incoming_udp_traffic']].max
           aggregate["#{k}"]['incoming']['udp']['pps'] = [aggregate["#{k}"]['incoming']['udp']['pps'],item[:information]['attack_details']['incoming_udp_pps']].max
           
-          aggregate["#{k}"]['incoming']['icmp']['traffic'] = [aggregate["#{k}"]['incoming']['icmp']['traffic'],item[:information]['attack_details']['incoming_icmp_traffic']].max
+          aggregate["#{k}"]['incoming']['icmp']['mbps'] = [aggregate["#{k}"]['incoming']['icmp']['mbps'],item[:information]['attack_details']['incoming_icmp_traffic']].max
           aggregate["#{k}"]['incoming']['icmp']['pps'] = [aggregate["#{k}"]['incoming']['icmp']['pps'],item[:information]['attack_details']['incoming_icmp_pps']].max
 
           item[:packets_dump].each { |pcap_line| aggregate["#{k}"]['capture'] << pcap_line } if params[:p1] == 'capture'
@@ -91,10 +91,10 @@ class Healer
       # normalize bps => mbps
 
       aggregate.each do |k,v|
-        aggregate["#{k}"]['incoming']['total']['traffic'] = (aggregate["#{k}"]['incoming']['total']['traffic'] / 1048576.0).round(2)
-        aggregate["#{k}"]['incoming']['tcp']['traffic'] = (aggregate["#{k}"]['incoming']['tcp']['traffic'] / 1048576.0).round(2)
-        aggregate["#{k}"]['incoming']['udp']['traffic'] = (aggregate["#{k}"]['incoming']['udp']['traffic'] / 1048576.0).round(2)
-        aggregate["#{k}"]['incoming']['icmp']['traffic'] = (aggregate["#{k}"]['incoming']['icmp']['traffic'] / 1048576.0).round(2)
+        aggregate["#{k}"]['incoming']['total']['mbps'] = (aggregate["#{k}"]['incoming']['total']['mbps'] / 1048576.0).round(2)
+        aggregate["#{k}"]['incoming']['tcp']['mbps'] = (aggregate["#{k}"]['incoming']['tcp']['mbps'] / 1048576.0).round(2)
+        aggregate["#{k}"]['incoming']['udp']['mbps'] = (aggregate["#{k}"]['incoming']['udp']['mbps'] / 1048576.0).round(2)
+        aggregate["#{k}"]['incoming']['icmp']['mbps'] = (aggregate["#{k}"]['incoming']['icmp']['mbps'] / 1048576.0).round(2)
       end
       
         body({reports: aggregate, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
