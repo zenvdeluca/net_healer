@@ -15,7 +15,7 @@ class Healer
     grouped = queue.group_by {|report| report[:information]['ip']}
     
     report = {}  
-    grouped["reports"].each do |item|
+    grouped[:reports].each do |item|
       ip = item[:information]['ip']
       report["#{ip}"] = {}
       report["#{ip}"]['site'] = item['site']
