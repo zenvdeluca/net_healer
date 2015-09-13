@@ -91,10 +91,10 @@ class Healer
       # normalize bps => mbps
 
       aggregate.each do |item|
-        item['incoming']['total']['traffic'] = item['incoming']['total']['traffic'] / 1048576
-        item['incoming']['tcp']['traffic'] = item['incoming']['tcp']['traffic'] / 1048576
-        item['incoming']['udp']['traffic'] = item['incoming']['udp']['traffic'] / 1048576
-        item['incoming']['icmp']['traffic'] = item['incoming']['icmp']['traffic'] / 1048576
+        item['incoming']['total']['traffic'] = item['incoming']['total']['traffic'].to_i / 1048576
+        item['incoming']['tcp']['traffic'] = item['incoming']['tcp']['traffic'].to_i / 1048576
+        item['incoming']['udp']['traffic'] = item['incoming']['udp']['traffic'].to_i / 1048576
+        item['incoming']['icmp']['traffic'] = item['incoming']['icmp']['traffic'].to_i / 1048576
       end
       
         body({reports: aggregate, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }.to_json)
