@@ -107,15 +107,7 @@ def gc_fastnetmon_redis
   return true
 end
 
-def top_talkers(num)
-  top = []
-  top_talkers = $influxdb_graphite.query "select top(value, cidr, #{num}) from hosts where direction = 'incoming' and resource = 'bps' group by time"
-  top_talkers.first["values"].each do |talker|
-    next if ( talker["cidr"] =~ /192_161_152_14[4-9]/ ) || ( talker["cidr"] =~ /192_161_152_15[1-9]/ )
-    top << { ipv4: talker["cidr"], bps: talker["top"] }
-  end
-  top
-end
+
 
 
 #
@@ -149,8 +141,6 @@ scheduler.every '5s' do
   feed_nethealer(payloads)
   #call garbage collection function
   gc_fastnetmon_redis
-
-
 
   puts "#{Time.now} - [INFO] - Back to listen state."
 end
