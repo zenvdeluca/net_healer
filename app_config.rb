@@ -20,13 +20,12 @@ module AppConfig
     @expire = ENV['THRESHOLD_EXPIRE'].to_i                
     @warning = ENV['THRESHOLD_WARNING'].to_i              
     @critical = ENV['THRESHOLD_CRITICAL'].to_i 
-    @action = ENV['THRESHOLD_ACTION']
-
+    
     %i[@expire @warning @critical @action].each do |config_var|
       raise "THRESHOLDS misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
     end
     class << self
-      attr_reader :warning, :critical, :expire, :action
+      attr_reader :warning, :critical, :expire
     end
   end
 
