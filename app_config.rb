@@ -21,7 +21,7 @@ module AppConfig
     @warning = ENV['THRESHOLD_WARNING'].to_i              
     @critical = ENV['THRESHOLD_CRITICAL'].to_i 
     
-    %i[@expire @warning @critical @action].each do |config_var|
+    %i[@expire @warning @critical].each do |config_var|
       raise "THRESHOLDS misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
     end
     class << self
