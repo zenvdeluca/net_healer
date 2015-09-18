@@ -94,7 +94,7 @@ def gc_fastnetmon_redis
     $notifications_warning = []
     $notifications_critical = []
     gc = []
-    pattern = '*_information'
+    pattern = '*_packets_dump'
     $redis_connection.scan_each(:match => pattern) {|key| gc << key.rpartition('_')[0] }
     gc.each do |junk|
       puts "removing null key for #{junk}" if $debug == 2
