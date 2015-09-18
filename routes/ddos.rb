@@ -76,6 +76,7 @@ class Healer
         rescue
           aggregate["#{k}"]['fqdn'] = 'no.reverse.dns'
         end 
+        aggregate["#{k}"]['site'] = AppConfig::NOTIFICATIONS.location
         aggregate["#{k}"]['alerts'] = 0
         aggregate["#{k}"]['protocol'] = []
         aggregate["#{k}"]['incoming'] = {}
