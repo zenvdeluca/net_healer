@@ -258,7 +258,7 @@ MESSAGE_END
       Net::SMTP.start(AppConfig::NOTIFICATIONS.smtp) do |smtp|
         smtp.send_message message, AppConfig::NOTIFICATIONS.smtp_from,AppConfig::NOTIFICATIONS.smtp_to
       end
-      incident = pagerduty.trigger("DDoS WARNING: #{reports.to_yaml}") if pagerduty_enabled
+      incident = pagerduty.trigger("DDoS WARNING: #{info}") if pagerduty_enabled
       puts "|Notifications_Warning_Sent| - #{Time.now}"
       
     else
