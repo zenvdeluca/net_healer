@@ -62,7 +62,7 @@ def parse_fastnetmon_redis(payloads_raw)
       payloads << { site: payloads_raw[key][:site],
                     information: info,
                     flow_dump: flow_dump,
-                    #packets_dump: packets_dump
+                    packets_dump: packets_dump
                     }
 
     rescue Exception => e
@@ -119,7 +119,7 @@ scheduler.every '5s' do
   current = []
   pattern = '*_information'
   begin
-    $redis_connection.scan_each(:match => pattern) {|key| current << key.rpartition('_')[0].rpartition('_')[0] }
+    $redis_connection.scan_each(:match => pattern) {|key| current << key.rpartition('_')[0] }
   rescue
     puts "#{Time.now} - [ERROR] - Failed to connect to Redis :( - [#{nethealer_server}]"
     next
