@@ -65,8 +65,6 @@ def parse_fastnetmon_redis(payloads_raw)
                     #packets_dump: packets_dump
                     }
 
-      puts payloads
-
     rescue Exception => e
       puts e.message if $debug >= 1
       puts e.backtrace.inspect if $debug == 2
@@ -134,8 +132,9 @@ scheduler.every '5s' do
 
   puts "#{Time.now} - [INFO] - Fetching FastNetMon detected attack reports - [#{nethealer_server}]" if $debug >= 1
   payloads_raw = fetch_fastnetmon_redis(current)
+  puts "0 => #{payloads_raw}"
   payloads = parse_fastnetmon_redis(payloads_raw)
-
+  puts "1 => #{payloads}"
   puts "#{Time.now} - [INFO] - Feeding Healer analyzer - [#{payloads}]" if $debug >= 1
 
   #feed net healer queue
