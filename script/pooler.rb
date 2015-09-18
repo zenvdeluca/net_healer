@@ -211,7 +211,7 @@ end
 # Notification schedulers
 #
 
-pagerduty_enabled = true unless AppConfig::PAGERDUTY.key = "" || AppConfig::PAGERDUTY.key.nil? 
+pagerduty_enabled = true unless (AppConfig::PAGERDUTY.key == "") || AppConfig::PAGERDUTY.key.nil? 
 pagerduty = Pagerduty.new(AppConfig::PAGERDUTY.key) if pagerduty_enabled
 
 $notifications_warning = []
