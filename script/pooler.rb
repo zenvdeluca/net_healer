@@ -95,19 +95,19 @@ def feed_nethealer(payloads)
 end
 
 def gc_fastnetmon_redis
-  if $count > 15
-    puts "#{Time.now} - [INFO] - Running garbage collection..." if $debug == 2
+  if $count > 30
+    puts "#{Time.now} - [INFO] - Running garbage collection..." if $debug == 1
     $notifications_warning = []
     $notifications_critical = []
     gc = []
-    pattern = '*_packets_dump'
-    $redis_connection.scan_each(:match => pattern) {|key| gc << key.rpartition('_')[0] }
-    gc.each do |junk|
-      puts "removing null key for #{junk}" if $debug == 2
-      #$redis_connection.del("#{junk}_information")
-      #$redis_connection.del("#{junk}_flow_dump")
-      $redis_connection.del("#{junk}_packets_dump")
-    end
+    #pattern = '*_packets_dump'
+    #$redis_connection.scan_each(:match => pattern) {|key| gc << key.rpartition('_')[0] }
+    #gc.each do |junk|
+    #  puts "removing null key for #{junk}" if $debug == 2
+    #  #$redis_connection.del("#{junk}_information")
+    #  #$redis_connection.del("#{junk}_flow_dump")
+    #  $redis_connection.del("#{junk}_packets_dump")
+    #end
     $count = 0
   end
   $count += 1
