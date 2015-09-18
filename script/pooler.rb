@@ -242,14 +242,14 @@ scheduler.every '10s' do
     message = <<MESSAGE_END
 From: DDoS Detection <#{AppConfig::NOTIFICATIONS.smtp_from}>
 To: Network Operations <#{AppConfig::NOTIFICATIONS.smtp_to}>
-Subject: [WARNING] - Possible DDoS - targets: #{info}
+Subject: [WARNING] - Possible DDoS in #{AppConfig::NOTIFICATIONS.location} - target: #{info}
 
 Healer Dashboard: https://netmonitor.zdsys.com 
 
 Attack info:
 #{reports.to_yaml}
 
-Packet capture:
+Flow dump:
 #{capture.to_yaml}
 
 MESSAGE_END
@@ -258,7 +258,7 @@ MESSAGE_END
       Net::SMTP.start(AppConfig::NOTIFICATIONS.smtp) do |smtp|
         smtp.send_message message, AppConfig::NOTIFICATIONS.smtp_from,AppConfig::NOTIFICATIONS.smtp_to
       end
-      incident = pagerduty.trigger("DDoS WARNING: #{info}") if pagerduty_enabled
+      incident = pagerduty.trigger("#{AppConfig::NOTIFICATIONS.location} - DDOS WARNING - #{info}") if pagerduty_enabled
       puts "|Notifications_Warning_Sent| - #{Time.now}"
       
     else
@@ -277,14 +277,14 @@ MESSAGE_END
     message = <<MESSAGE_END
 From: DDoS Detection <#{AppConfig::NOTIFICATIONS.smtp_from}>
 To: Network Operations <#{AppConfig::NOTIFICATIONS.smtp_to}>
-Subject: [CRITICAL] - DDoS Attack - targets: #{info}
+Subject: [CRITICAL] - DDoS Attack in #{AppConfig::NOTIFICATIONS.location} - target: #{info}
 
 Healer Dashboard: https://#{AppConfig::NETHEALER.influxdb}
 
 Attack info:
 #{reports.to_yaml}
 
-Packet capture:
+Flow dump:
 #{capture.to_yaml}
 
 
@@ -296,7 +296,7 @@ MESSAGE_END
       Net::SMTP.start(AppConfig::NOTIFICATIONS.smtp) do |smtp|
         smtp.send_message message, AppConfig::NOTIFICATIONS.smtp_from,AppConfig::NOTIFICATIONS.smtp_to
       end
-      incident = pagerduty.trigger("DDoS CRITICAL: #{info}") if pagerduty_enabled
+      incident = pagerduty.trigger("#{AppConfig::NOTIFICATIONS.location} - DDOS CRITICAL: #{info}") if pagerduty_enabled
       puts "|Notifications_Critical_Sent| - #{Time.now}"
 
     else
