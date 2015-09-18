@@ -7,6 +7,7 @@ require 'dotenv'
 require 'rest-client'
 require 'influxdb'
 require 'net/smtp'
+require 'pagerduty'
 require 'yaml'
 
 Dotenv.load
@@ -88,26 +89,24 @@ def feed_nethealer(payloads)
 end
 
 def gc_fastnetmon_redis
-  $count += 1
-  if $count > 30
+  if $count > 5
     puts "#{Time.now} - [INFO] - Running garbage collection..." if $debug == 2
     $notifications_warning = []
     $notifications_critical = []
     gc = []
-    pattern = '*_information'
+    pattern = '*_packets_dump'
     $redis_connection.scan_each(:match => pattern) {|key| gc << key.rpartition('_')[0] }
     gc.each do |junk|
       puts "removing null key for #{junk}" if $debug == 2
-      $redis_connection.del("#{junk}_information")
-      $redis_connection.del("#{junk}_flow_dump")
+      #$redis_connection.del("#{junk}_information")
+      #$redis_connection.del("#{junk}_flow_dump")
       $redis_connection.del("#{junk}_packets_dump")
     end
     $count = 0
   end
+  $count += 1
   return true
 end
-
-
 
 
 #
@@ -118,7 +117,7 @@ end
 
 scheduler.every '5s' do
   current = []
-  pattern = '*_packets_dump'
+  pattern = '*_information'
   begin
     $redis_connection.scan_each(:match => pattern) {|key| current << key.rpartition('_')[0].rpartition('_')[0] }
   rescue
@@ -212,6 +211,9 @@ end
 # Notification schedulers
 #
 
+pagerduty_enabled = true unless AppConfig::PAGERDUTY.key = "" || AppConfig::PAGERDUTY.key.nil? 
+pagerduty = Pagerduty.new(AppConfig::PAGERDUTY.key) if pagerduty_enabled
+
 $notifications_warning = []
 $notifications_critical = []
 
@@ -231,7 +233,6 @@ scheduler.every '10s' do
     reports = reports['reports']
     capture = {}
     reports.each { |k,v| capture["#{k}"] = v.delete('capture') }
-    #top = top_talkers(10)
 
     message = <<MESSAGE_END
 From: DDoS Detection <#{AppConfig::NOTIFICATIONS.smtp_from}>
@@ -252,7 +253,9 @@ MESSAGE_END
       Net::SMTP.start(AppConfig::NOTIFICATIONS.smtp) do |smtp|
         smtp.send_message message, AppConfig::NOTIFICATIONS.smtp_from,AppConfig::NOTIFICATIONS.smtp_to
       end
+      incident = pagerduty.trigger("DDoS WARNING: #{reports.to_yaml}") if pagerduty_enabled
       puts "|Notifications_Warning_Sent| - #{Time.now}"
+      
     else
       puts "|Notifications_Warning_Skip| - #{Time.now}"
     end
@@ -265,8 +268,7 @@ MESSAGE_END
     reports = reports['reports']
     capture = {}
     reports.each { |k,v| capture["#{k}"] = v.delete('capture') }
-    #top = top_talkers(10)
-
+  
     message = <<MESSAGE_END
 From: DDoS Detection <#{AppConfig::NOTIFICATIONS.smtp_from}>
 To: Network Operations <#{AppConfig::NOTIFICATIONS.smtp_to}>
@@ -289,6 +291,7 @@ MESSAGE_END
       Net::SMTP.start(AppConfig::NOTIFICATIONS.smtp) do |smtp|
         smtp.send_message message, AppConfig::NOTIFICATIONS.smtp_from,AppConfig::NOTIFICATIONS.smtp_to
       end
+      incident = pagerduty.trigger("DDoS CRITICAL: #{reports.to_yaml}") if pagerduty_enabled
       puts "|Notifications_Critical_Sent| - #{Time.now}"
 
     else

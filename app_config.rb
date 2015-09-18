@@ -42,17 +42,14 @@ module AppConfig
     end
   end
 
-
-
-  class JIRA
-    @host = ENV['JIRA_HOSTNAME']
-    @user = ENV['JIRA_USER']
-    @password = ENV['JIRA_PASSWORD']
-
+  class PAGERDUTY
+    @key = ENV['PAGERDUTY_KEY']
+   
     class << self
-      attr_reader :host, :user, :password
+      attr_reader :key
     end
   end
+end
 
   class FLOWDOCK
     @ops_flow = ENV['FLOWDOCK_OPS']
