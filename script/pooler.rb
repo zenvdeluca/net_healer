@@ -98,8 +98,8 @@ def gc_fastnetmon_redis
     $redis_connection.scan_each(:match => pattern) {|key| gc << key.rpartition('_')[0] }
     gc.each do |junk|
       puts "removing null key for #{junk}" if $debug == 2
-      #$redis_connection.del("#{junk}_information")
-      #$redis_connection.del("#{junk}_flow_dump")
+      $redis_connection.del("#{junk}_information")
+      $redis_connection.del("#{junk}_flow_dump")
       $redis_connection.del("#{junk}_packets_dump")
     end
     $count = 0
