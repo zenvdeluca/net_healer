@@ -41,7 +41,7 @@ def fetch_fastnetmon_redis(queue)
       site: ip.split('_')[0],
       information: $redis_connection.get("#{ip}_information"),
       flow_dump: $redis_connection.get("#{ip}_flow_dump"),
-      packets_dump: $redis_connection.get("#{ip}_packets_dump")
+      #packets_dump: $redis_connection.get("#{ip}_packets_dump")
     }
 
     # After import, erase from Redis (fastnetmon raw format)
@@ -57,13 +57,15 @@ def parse_fastnetmon_redis(payloads_raw)
       info = JSON.parse(payloads_raw[key][:information])
       next if info["attack_details"]["attack_direction"] == 'outgoing' # ignore fastnetmon outgoing alerts
       flow_dump = payloads_raw[key][:flow_dump].split("\n").reject! { |l| l.empty? } unless payloads_raw[key][:flow_dump].nil?
-      packets_dump = payloads_raw[key][:packets_dump].split("\n").reject! { |l| l.empty? || !l.include?('sample')} unless payloads_raw[key][:packets_dump].nil?
+      #packets_dump = payloads_raw[key][:packets_dump].split("\n").reject! { |l| l.empty? || !l.include?('sample')} unless payloads_raw[key][:packets_dump].nil?
 
       payloads << { site: payloads_raw[key][:site],
                     information: info,
                     flow_dump: flow_dump,
-                    packets_dump: packets_dump
+                    #packets_dump: packets_dump
                     }
+
+      puts payloads
 
     rescue Exception => e
       puts e.message if $debug >= 1
