@@ -56,7 +56,7 @@ def parse_fastnetmon_redis(payloads_raw)
     begin
       info = JSON.parse(payloads_raw[key][:information])
       if info["attack_details"]["attack_direction"] == 'outgoing' # ignore fastnetmon outgoing alerts
-      	print "O" if $debug == 1
+      	print 'O' if $debug == 1
       	puts "removing outgoing report for #{key}" if $debug == 2	
 	    $redis_connection.del("#{key}_information")
 	    $redis_connection.del("#{key}_flow_dump")
@@ -140,7 +140,8 @@ scheduler.every '5s' do
   puts "#{Time.now} - [INFO] - Fetching FastNetMon detected attack reports - [#{nethealer_server}]" if $debug >= 2
   payloads_raw = fetch_fastnetmon_redis(current)
   payloads = parse_fastnetmon_redis(payloads_raw)
-  print "F" if $debug == 1
+  next if payloads.empty?
+  print 'F' if $debug == 1
   puts "#{Time.now} - [INFO] - Feeding Healer analyzer - [#{nethealer_server}]" if $debug >= 2
 
   #feed net healer queue
@@ -148,7 +149,7 @@ scheduler.every '5s' do
   #call garbage collection function
   gc_fastnetmon_redis
 
-  puts "#{Time.now} - [INFO] - Back to listen state."
+  puts "#{Time.now} - [INFO] - Back to listen state." if $debug >=2
 end
 
 
