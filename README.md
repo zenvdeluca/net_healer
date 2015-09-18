@@ -14,15 +14,15 @@ Lower the FNM ban time, faster NET HEALER will advance in stages (thresholds can
 Start with FNM ban time: 30 seconds (NET HEALER will converge from cleared to warning after 90 seconds)
 
 ## Actions
-  Working:
+Working:
  - Grafana vertical bars markdown including state/target (OK)
  - email (OK-beta)
- 
-   WIP:
+ - pagerduty (OK)
+
+WIP:
  - BGP blackhole or scrubbing center routing
  - flowdock messages
- - pagerduty alerts
- * integrations should be moved to plugins/ in a future
+note: custom integrations should be moved to plugins/ in a future
 
 ## Requirements
 - FastNetMon: a super cool tool written by Pavel Odintsov - https://github.com/FastVPSEestiOu/fastnetmon
