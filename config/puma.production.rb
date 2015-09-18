@@ -63,7 +63,7 @@ threads 2, 32
 # bind 'tcp://0.0.0.0:9292'
 # bind 'unix:///var/run/puma.sock'
 # bind 'unix:///var/run/puma.sock?umask=0111'
-ssl_bind '0.0.0.0', '4999', { key: ENV['SSL_KEY_PATH'], cert: ENV['SSL_CERT_PATH'] }
+ssl_bind '0.0.0.0', '443', { key: ENV['SSL_KEY_PATH'], cert: ENV['SSL_CERT_PATH'] }
 
 # Instead of "bind 'ssl://127.0.0.1:9292?key=path_to_key&cert=path_to_cert'" you
 # can also use the "ssl_bind" option.

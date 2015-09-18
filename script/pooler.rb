@@ -107,15 +107,7 @@ def gc_fastnetmon_redis
   return true
 end
 
-def top_talkers(num)
-  top = []
-  top_talkers = $influxdb_graphite.query "select top(value, cidr, #{num}) from hosts where direction = 'incoming' and resource = 'bps' group by time"
-  top_talkers.first["values"].each do |talker|
-    next if ( talker["cidr"] =~ /192_161_152_14[4-9]/ ) || ( talker["cidr"] =~ /192_161_152_15[1-9]/ )
-    top << { ipv4: talker["cidr"], bps: talker["top"] }
-  end
-  top
-end
+
 
 
 #
@@ -149,8 +141,6 @@ scheduler.every '5s' do
   feed_nethealer(payloads)
   #call garbage collection function
   gc_fastnetmon_redis
-
-
 
   puts "#{Time.now} - [INFO] - Back to listen state."
 end
@@ -199,11 +189,19 @@ end
 scheduler.every '5s' do
   total_bps = $influxdb_graphite.query "select last(value) from total where resource = 'bps' group by direction,resource"
   ratio_bps = total_bps[0]['values'].first['last'].to_f / total_bps[1]['values'].first['last'].to_f
-  payload_bps = { values: { info: ratio_bps } }
+  unless ratio_bps == Float::INFINITY
+    payload_bps = { values: { info: ratio_bps } }
+  else
+    payload_bps = { values: { info: 0 } }
+  end
 
   total_pps = $influxdb_graphite.query "select last(value) from total where resource = 'pps' group by direction,resource"
   ratio_pps = total_pps[0]['values'].first['last'].to_f / total_pps[1]['values'].first['last'].to_f
-  payload_pps = { values: { info: ratio_pps } }
+  unless ratio_pps == Float::INFINITY
+    payload_pps = { values: { info: ratio_pps } }
+  else
+    payload_pps = { values: { info: 0 } }
+  end
 
   $influxdb_events.write_point('ratio_bps', payload_bps)
   $influxdb_events.write_point('ratio_pps', payload_pps)
