@@ -62,7 +62,7 @@ def parse_fastnetmon_redis(payloads_raw)
       payloads << { site: payloads_raw[key][:site],
                     information: info,
                     flow_dump: flow_dump,
-                    packets_dump: packets_dump
+                    #packets_dump: packets_dump
                     }
 
     rescue Exception => e
@@ -117,7 +117,7 @@ end
 
 scheduler.every '5s' do
   current = []
-  pattern = '*_packets_dump'
+  pattern = '*_information'
   begin
     $redis_connection.scan_each(:match => pattern) {|key| current << key.rpartition('_')[0].rpartition('_')[0] }
   rescue
