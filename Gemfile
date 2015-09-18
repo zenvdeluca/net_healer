@@ -12,6 +12,7 @@ gem 'rufus-scheduler', '~> 3.1.3'
 gem 'redis'
 gem 'redis-namespace'
 gem 'influxdb'
+gem 'pagerduty'
 group :test, :development do
   gem 'dotenv', '~> 2.0.2'
   gem 'rack-test', '~> 0.6.3'
