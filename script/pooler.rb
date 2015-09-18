@@ -136,7 +136,7 @@ scheduler.every '5s' do
   payloads_raw = fetch_fastnetmon_redis(current)
   payloads = parse_fastnetmon_redis(payloads_raw)
 
-  puts "#{Time.now} - [INFO] - Feeding Healer analyzer - [#{nethealer_server}]" if $debug >= 1
+  puts "#{Time.now} - [INFO] - Feeding Healer analyzer - [#{payloads}]" if $debug >= 1
 
   #feed net healer queue
   feed_nethealer(payloads)
