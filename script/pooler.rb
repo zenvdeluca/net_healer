@@ -56,7 +56,7 @@ def parse_fastnetmon_redis(payloads_raw)
     begin
       info = JSON.parse(payloads_raw[key][:information])
       if info["attack_details"]["attack_direction"] == 'outgoing' # ignore fastnetmon outgoing alerts
-      	puts "removing outgoing report for #{key}" if $debug == 2
+      	puts "removing outgoing report for #{key}" if $debug == 1
 	    $redis_connection.del("#{key}_information")
 	    $redis_connection.del("#{key}_flow_dump")
 	    $redis_connection.del("#{key}_packets_dump")
