@@ -126,7 +126,7 @@ class Healer
 
           if params[:p1] == 'capture'
             begin
-              item[:flows_dump].each { |pcap_line| aggregate["#{k}"]['capture'] << pcap_line } 
+              item[:flow_dump].each { |pcap_line| aggregate["#{k}"]['capture'] << pcap_line } 
             rescue
             end
           end
