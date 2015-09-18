@@ -175,7 +175,7 @@ scheduler.every '5s' do
     }
     $influxdb_events.write_point('nethealer', data) if data != last_data
   else
-    puts "|Attack| - #{Time.now}"
+    puts "|Critical| - #{Time.now}"
     info = ''
     response['target'].map {|k,v| info = info + "|#{k}(#{v})"}
     last_data = data
@@ -296,7 +296,7 @@ MESSAGE_END
       Net::SMTP.start(AppConfig::NOTIFICATIONS.smtp) do |smtp|
         smtp.send_message message, AppConfig::NOTIFICATIONS.smtp_from,AppConfig::NOTIFICATIONS.smtp_to
       end
-      incident = pagerduty.trigger("DDoS CRITICAL: #{reports.to_yaml}") if pagerduty_enabled
+      incident = pagerduty.trigger("DDoS CRITICAL: #{info}") if pagerduty_enabled
       puts "|Notifications_Critical_Sent| - #{Time.now}"
 
     else
