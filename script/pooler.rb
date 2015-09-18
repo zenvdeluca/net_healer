@@ -55,7 +55,13 @@ def parse_fastnetmon_redis(payloads_raw)
   payloads_raw.each do |key,value|
     begin
       info = JSON.parse(payloads_raw[key][:information])
-      next if info["attack_details"]["attack_direction"] == 'outgoing' # ignore fastnetmon outgoing alerts
+      if info["attack_details"]["attack_direction"] == 'outgoing' # ignore fastnetmon outgoing alerts
+      	puts "removing outgoing report for #{key}" if $debug == 2
+	    $redis_connection.del("#{key}_information")
+	    $redis_connection.del("#{key}_flow_dump")
+	    $redis_connection.del("#{key}_packets_dump")
+      	next
+      end
       flow_dump = payloads_raw[key][:flow_dump].split("\n").reject! { |l| l.empty? } unless payloads_raw[key][:flow_dump].nil?
       #packets_dump = payloads_raw[key][:packets_dump].split("\n").reject! { |l| l.empty? || !l.include?('sample')} unless payloads_raw[key][:packets_dump].nil?
 
