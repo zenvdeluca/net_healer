@@ -14,8 +14,8 @@ Dotenv.load
 require_relative '../app_config'
 
 nethealer_server=AppConfig::NETHEALER.server
-$influxdb_events = InfluxDB::Client.new 'events', host: AppConfig::NETHEALER.influxdb, username: AppConfig::NETHEALER.username, password: AppConfig::NETHEALER.password
-$influxdb_graphite = InfluxDB::Client.new 'graphite', host: AppConfig::NETHEALER.influxdb, username: AppConfig::NETHEALER.username, password: AppConfig::NETHEALER.password
+#$influxdb_events = InfluxDB::Client.new 'events', host: AppConfig::NETHEALER.influxdb, username: AppConfig::NETHEALER.username, password: AppConfig::NETHEALER.password
+$influxdb_events = $influxdb_graphite = InfluxDB::Client.new 'graphite', host: AppConfig::NETHEALER.influxdb, username: AppConfig::NETHEALER.username, password: AppConfig::NETHEALER.password
 
 $redis_connection = Redis.new(:host => nethealer_server)
 $namespaced_current = Redis::Namespace.new('healer_current', redis: $redis_connection)
