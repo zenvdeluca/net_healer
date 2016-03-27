@@ -36,8 +36,8 @@ note: custom integrations should be moved to plugins/ in a future
  - Redis (https://github.com/FastVPSEestiOu/fastnetmon/blob/master/docs/REDIS.md)
  - InfluxDB (https://github.com/FastVPSEestiOu/fastnetmon/blob/master/docs/INFLUXDB_INTEGRATION.md)
  - Add to /usr/local/bin/notify_about_attack.sh under if [ "$4" == "attack_details" ]; then
-    curl -sk https://{nethealer_ip:port}/healer/v1/ddos/pool
-    curl -sk https://{nethealer_ip:port}/healer/v1/ddos/actions
+    <br>curl -sk https://{nethealer_ip:port}/healer/v1/ddos/pool
+    <br>curl -sk https://{nethealer_ip:port}/healer/v1/ddos/actions
 
 
 1. install ruby (https://www.ruby-lang.org/en/documentation/installation/)
