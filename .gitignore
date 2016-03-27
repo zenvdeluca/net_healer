@@ -3,4 +3,4 @@ puma.pid
 log/
 *.swp
 *.lock
-actions-enabled/
+actions-enabled/*

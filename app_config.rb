@@ -53,11 +53,10 @@ module AppConfig
 
 
   class FLOWDOCK
-    @ops_flow = ENV['FLOWDOCK_OPS']
-    @netops_notifications_flow = ENV['FLOWDOCK_NETOPS']
-
+    @tokens = ENV['FLOWDOCK_TOKENS']
+    
     class << self
-      attr_reader :ops_flow, :netops_notifications_flow
+      attr_reader :tokens
     end
   end
 end
