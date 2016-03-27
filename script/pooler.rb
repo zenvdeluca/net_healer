@@ -6,9 +6,6 @@ require 'json'
 require 'dotenv'
 require 'rest-client'
 require 'influxdb'
-require 'net/smtp'
-require 'pagerduty'
-require 'yaml'
 
 Dotenv.load
 require_relative '../app_config'
@@ -31,7 +28,6 @@ healer = RestClient::Resource.new(
 )
 
 $debug = 1
-$count = 1
 
 #
 # Schedulers
