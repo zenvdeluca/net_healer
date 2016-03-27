@@ -3,6 +3,8 @@ require 'sinatra/cross_origin'
 require 'sinatra/namespace'
 require 'sinatra/json'
 require 'ipaddr'
+require 'pagerduty'
+require 'rest-client'
 
 require_relative 'app_config'
 
@@ -10,6 +12,14 @@ class Healer < Sinatra::Base
   API_VERSION = '1'
   API_PREFIX = 'healer'
   API_URL = "/#{API_PREFIX}/v#{API_VERSION}"
+
+  $healer = RestClient::Resource.new(
+    "https://#{AppConfig::NETHEALER.server}/healer/v1/",
+    headers: { content_type: 'application/json' },
+    verify_ssl: false
+  )
+
+  $debug = 2
 
   register Sinatra::CrossOrigin
   register Sinatra::Namespace
@@ -39,4 +49,4 @@ def require_directory(directory)
   end
 end
 
-%w[jobs lib routes models serializers].each { |dir| require_directory dir }
+%w[jobs lib routes models serializers actions].each { |dir| require_directory dir }
