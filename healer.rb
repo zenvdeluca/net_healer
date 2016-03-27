@@ -49,4 +49,4 @@ def require_directory(directory)
   end
 end
 
-%w[jobs lib routes models serializers actions].each { |dir| require_directory dir }
+%w[jobs lib routes models serializers actions-enabled].each { |dir| require_directory dir }

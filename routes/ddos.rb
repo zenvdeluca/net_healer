@@ -249,7 +249,7 @@ class Healer
       actions = Actions.new
 
       Actions.instance_methods(false).each do |method|
-        if method.to_s.include?('warning')
+        if method.to_s.include?(current[:status])
           execute << method
         end
       end
