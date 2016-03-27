@@ -31,131 +31,18 @@ healer = RestClient::Resource.new(
 )
 
 $debug = 1
-$count = 5
-
-def fetch_fastnetmon_redis(queue)
-  payloads_raw = {}
-  queue.each do |ip|
-
-    payloads_raw[ip] = {
-      site: ip.split('_')[0],
-      information: $redis_connection.get("#{ip}_information"),
-      flow_dump: $redis_connection.get("#{ip}_flow_dump"),
-      #packets_dump: $redis_connection.get("#{ip}_packets_dump")
-    }
-
-    # After import, erase from Redis (fastnetmon raw format)
-    $redis_connection.del("#{ip}_information","#{ip}_flow_dump","#{ip}_packets_dump")
-  end
-  payloads_raw
-end
-
-def parse_fastnetmon_redis(payloads_raw)
-  payloads = []
-  payloads_raw.each do |key,value|
-    begin
-      info = JSON.parse(payloads_raw[key][:information])
-      if info["attack_details"]["attack_direction"] == 'outgoing' # ignore fastnetmon outgoing alerts
-      	print 'O' if $debug == 1
-      	puts "removing outgoing report for #{key}" if $debug == 2	
-	    $redis_connection.del("#{key}_information")
-	    $redis_connection.del("#{key}_flow_dump")
-	    $redis_connection.del("#{key}_packets_dump")
-      	next
-      end
-      flow_dump = payloads_raw[key][:flow_dump].split("\n").reject! { |l| l.empty? } unless payloads_raw[key][:flow_dump].nil?
-      #packets_dump = payloads_raw[key][:packets_dump].split("\n").reject! { |l| l.empty? || !l.include?('sample')} unless payloads_raw[key][:packets_dump].nil?
-
-      payloads << { site: payloads_raw[key][:site],
-                    information: info,
-                    flow_dump: flow_dump,
-                    #packets_dump: packets_dump
-                    }
-
-    rescue Exception => e
-      puts e.message if $debug >= 1
-      puts e.backtrace.inspect if $debug == 2
-      puts "Failed to parse #{key}: #{payloads_raw[key]} ignoring null report..." if $debug >= 1
-      next
-    end
-  end
-  payloads
-end
-
-def feed_nethealer(payloads)
-  payloads.each do |attack_report|
-    timestamp = Time.now.strftime("%Y%m%d-%H%M%S")
-    key = attack_report[:information]['ip'] + '-' + timestamp
-    $namespaced_current.set(key, attack_report)
-    $namespaced_history.set(key, attack_report)
-    $namespaced_current.expire(key, AppConfig::THRESHOLDS.expire)
-    puts JSON.pretty_generate(JSON.parse(attack_report.to_json)) if $debug == 2
-    puts " * Added attack report:" + attack_report[:information]['ip'] if $debug >= 1
-  end
-  return true
-end
-
-def gc_fastnetmon_redis
-  if $count > 30
-    puts "#{Time.now} - [INFO] - Running garbage collection..." if $debug == 2
-    $notifications_warning = []
-    $notifications_critical = []
-    gc = []
-    pattern = '*_packets_dump'
-    $redis_connection.scan_each(:match => pattern) {|key| gc << key }
-    gc.each do |junk|
-      puts "removing null key for #{junk}" if $debug == 2
-      $redis_connection.del("#{junk}")
-    end
-    $count = 0
-  end
-  $count += 1
-  return true
-end
-
+$count = 1
 
 #
 # Schedulers
 #
-
-# watch redis for FastNetMon Attack Reports. Parse and Feed to NET HEALER
-
-scheduler.every '5s' do
-  current = []
-  pattern = '*_information'
-  begin
-    $redis_connection.scan_each(:match => pattern) {|key| current << key.rpartition('_')[0] }
-  rescue
-    puts "#{Time.now} - [ERROR] - Failed to connect to Redis :( - [#{nethealer_server}]"
-    next
-  end
-
-  if current.empty?
-    puts "#{Time.now} - [INFO] - no new attack reports found - [#{nethealer_server}]" if $debug >= 2
-    next
-  end
-
-  puts "#{Time.now} - [INFO] - Fetching FastNetMon detected attack reports - [#{nethealer_server}]" if $debug >= 2
-  payloads_raw = fetch_fastnetmon_redis(current)
-  payloads = parse_fastnetmon_redis(payloads_raw)
-  next if payloads.empty?
-  puts "#{Time.now} - [INFO] - Feeding Healer analyzer - [#{nethealer_server}]" if $debug >= 2
-
-  #feed net healer queue
-  feed_nethealer(payloads)
-  #call garbage collection function
-  gc_fastnetmon_redis
-
-  puts "#{Time.now} - [INFO] - Back to listen state." if $debug >=2
-end
-
 
 # Graph vertical markdown. NET HEALER API query - Grafana: warning[yellow] & critical[red]
 
 last_data = nil
 data = ''
 
-scheduler.every '5s' do
+scheduler.every '15s' do
 
   response = JSON.parse(healer['ddos/status'].get)
   status = response['status']
@@ -190,7 +77,7 @@ end
 
 # Calculate in/out bps ratio -- consider refactor
 
-scheduler.every '5s' do
+scheduler.every '15s' do
   total_bps = $influxdb_graphite.query "select last(value) from total where resource = 'bps' group by direction,resource"
   ratio_bps = total_bps[0]['values'].first['last'].to_f / total_bps[1]['values'].first['last'].to_f
   unless ratio_bps == Float::INFINITY
@@ -210,103 +97,5 @@ scheduler.every '5s' do
   $influxdb_events.write_point('ratio_bps', payload_bps)
   $influxdb_events.write_point('ratio_pps', payload_pps)
 end
-
-
-#
-# Notification schedulers
-#
-
-pagerduty_enabled = true unless (AppConfig::PAGERDUTY.key == "") || AppConfig::PAGERDUTY.key.nil? 
-pagerduty = Pagerduty.new(AppConfig::PAGERDUTY.key) if pagerduty_enabled
-
-$notifications_warning = []
-$notifications_critical = []
-
-scheduler.every '10s' do
-  response = JSON.parse(healer['ddos/status'].get)
-  status = response['status']
-  target = response['target']
-
-  case status
-  when 'clear'
-    print '!'
-
-  when 'warning'
-    info = ''
-    response['target'].map {|k,v| info = info + "|#{k}"}
-    reports = JSON.parse(healer['ddos/reports/capture'].get)
-    reports = reports['reports']
-    capture = {}
-    reports.each { |k,v| capture["#{k}"] = v.delete('capture') }
-
-    message = <<MESSAGE_END
-From: DDoS Detection <#{AppConfig::NOTIFICATIONS.smtp_from}>
-To: Network Operations <#{AppConfig::NOTIFICATIONS.smtp_to}>
-Subject: [WARNING] - Possible DDoS in #{AppConfig::NOTIFICATIONS.location} - target: #{info}
-
-Healer Dashboard: https://netmonitor.zdsys.com 
-
-Attack info:
-#{reports.to_yaml}
-
-Flow dump:
-#{capture.to_yaml}
-
-MESSAGE_END
-
-    unless $notifications_warning.include?(message)
-      Net::SMTP.start(AppConfig::NOTIFICATIONS.smtp) do |smtp|
-        smtp.send_message message, AppConfig::NOTIFICATIONS.smtp_from,AppConfig::NOTIFICATIONS.smtp_to
-      end
-      incident = pagerduty.trigger("#{AppConfig::NOTIFICATIONS.location} - DDOS WARNING - #{info}") if pagerduty_enabled
-      puts "|Notifications_Warning_Sent| - #{Time.now}"
-      
-    else
-      puts "|Notifications_Warning_Skip| - #{Time.now}"
-    end
-    $notifications_warning = $notifications_warning | [message]
-  
-  else
-    info = ''
-    response['target'].map {|k,v| info = info + "|#{k}"}
-    reports = JSON.parse(healer['ddos/reports/capture'].get)
-    reports = reports['reports']
-    capture = {}
-    reports.each { |k,v| capture["#{k}"] = v.delete('capture') }
-  
-    message = <<MESSAGE_END
-From: DDoS Detection <#{AppConfig::NOTIFICATIONS.smtp_from}>
-To: Network Operations <#{AppConfig::NOTIFICATIONS.smtp_to}>
-Subject: [CRITICAL] - DDoS Attack in #{AppConfig::NOTIFICATIONS.location} - target: #{info}
-
-Healer Dashboard: https://#{AppConfig::NETHEALER.influxdb}
-
-Attack info:
-#{reports.to_yaml}
-
-Flow dump:
-#{capture.to_yaml}
-
-
-MESSAGE_END
-
-
-    unless $notifications_critical.include?(message)
-
-      Net::SMTP.start(AppConfig::NOTIFICATIONS.smtp) do |smtp|
-        smtp.send_message message, AppConfig::NOTIFICATIONS.smtp_from,AppConfig::NOTIFICATIONS.smtp_to
-      end
-      incident = pagerduty.trigger("#{AppConfig::NOTIFICATIONS.location} - DDOS CRITICAL: #{info}") if pagerduty_enabled
-      puts "|Notifications_Critical_Sent| - #{Time.now}"
-
-    else
-      puts "|Notifications_Critical_Skip| - #{Time.now}"
-    end
-    $notifications_critical = $notifications_critical | [message]
-  end
-
-end
-
-
 
 scheduler.join
