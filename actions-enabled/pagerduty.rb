@@ -1,1 +1,0 @@
-../actions-available/pagerduty.rb
