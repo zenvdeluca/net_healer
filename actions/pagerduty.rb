@@ -1,3 +1,4 @@
+require 'pagerduty'
 
 class Actions
   def warning_pagerduty(current)
