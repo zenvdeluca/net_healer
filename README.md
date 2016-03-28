@@ -16,13 +16,12 @@ Start with FNM ban time: 30 seconds (NET HEALER will converge from cleared to wa
 ## Actions
 Working:
  - Grafana vertical bars markdown including state/target (OK)
- - email (OK-beta)
- - pagerduty (OK)
+ - Email
+ - Pagerduty
+ - Flowdock messages
 
 WIP:
  - BGP blackhole or scrubbing center routing
- - flowdock messages
-note: custom integrations should be moved to plugins/ in a future
 
 ## Requirements
 - FastNetMon: a super cool tool written by Pavel Odintsov - https://github.com/FastVPSEestiOu/fastnetmon
