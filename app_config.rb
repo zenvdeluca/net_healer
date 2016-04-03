@@ -60,3 +60,12 @@ module AppConfig
     end
   end
 end
+
+
+  class GRAFANA
+    @url = ENV['GRAFANA_URL']
+
+    class << self
+      attr_reader :url
+    end
+  end

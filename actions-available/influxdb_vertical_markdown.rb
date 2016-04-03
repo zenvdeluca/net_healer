@@ -1,6 +1,5 @@
 require 'influxdb'
 
-
 class Actions
   def warning_influx_vertical_mark(current)
     info = current[:status].upcase + ' '

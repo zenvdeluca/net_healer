@@ -1,18 +1,14 @@
 #!/usr/bin/env ruby
+require 'dotenv'
+Dotenv.load
 require 'rufus-scheduler'
 require 'json'
-require 'dotenv'
-require 'rest-client'
 require 'influxdb'
-
-Dotenv.load
 require_relative '../app_config'
 
 $influxdb_events = $influxdb_graphite = InfluxDB::Client.new 'graphite', host: AppConfig::NETHEALER.influxdb, username: AppConfig::NETHEALER.username, password: AppConfig::NETHEALER.password
 
 scheduler = Rufus::Scheduler.new
-
-$debug = 1
 
 #
 # Schedulers
@@ -26,7 +22,7 @@ scheduler.every '5s' do
   unless ratio_bps == Float::INFINITY
     payload_bps = { values: { info: ratio_bps } }
   else
-    payload_bps = { values: { info: 0 } }
+    payload_bps = { values: { info: 100 } }
   end
 
   total_pps = $influxdb_graphite.query "select last(value) from total where resource = 'pps' group by direction,resource"
@@ -34,7 +30,7 @@ scheduler.every '5s' do
   unless ratio_pps == Float::INFINITY
     payload_pps = { values: { info: ratio_pps } }
   else
-    payload_pps = { values: { info: 0 } }
+    payload_pps = { values: { info: 100 } }
   end
 
   $influxdb_events.write_point('ratio_bps', payload_bps)
