@@ -54,7 +54,7 @@ stdout_redirect "#{root}/log/net_kadosh.log", "#{root}/log/net_kadosh.stderr.log
 #
 # The default is "0, 16".
 #
-threads 1, 1
+threads 2, 32
 
 # Bind the server to "url". "tcp://", "unix://" and "ssl://" are the only
 # accepted protocols.

@@ -2,9 +2,24 @@ require 'uri'
 require_relative '../lib/nethealer.rb'
 
 class Healer
-  
+
+  configure do
+    set :authorized, AppConfig::NETHEALER.whitelist
+    set :allow_cmds, AppConfig::NETHEALER.allow_cmds
+    set :allow_users, AppConfig::NETHEALER.allow_users
+  end
+
+  def get_headers()
+    Hash[*env.select {|k,v| k.start_with? 'HTTP_'}
+         .collect {|k,v| [k.sub(/^HTTP_/, ''), v]}
+         .collect {|k,v| [k.split('_').collect(&:capitalize).join('-'), v]}
+         .sort
+         .flatten]
+  end
+
 
   namespace API_URL do
+
 
     get "/ddos/brief/?" do
       current = []
@@ -87,6 +102,38 @@ class Healer
 
       return run.to_json
     end
+
+    get "/ddos/mitigation/?" do
+      blackhole, akamai = mitigation_status
+      body({akamai: akamai, blackhole: blackhole, timestamp: Time.now.strftime("%Y%m%d-%H%M%S")}.to_json)
+    end
+
+    get "/ddos/mitigation/:p1/add/:p2/:p3/?" do
+      auth_user = get_headers['X-Forwarded-User']
+      unless settings.authorized.include?(request.ip) && settings.allow_cmds.include?(params[:p1]) && settings.allow_users.include?(auth_user)
+        status 403
+        return body('Not authorized')
+      end
+
+      cmd = `/usr/local/sbin/#{params[:p1]} --add #{params[:p2]}/#{params[:p3]}`
+      blackhole, akamai = mitigation_status
+      puts "#{Time.now.strftime("%Y%m%d-%H%M%S")} -- #{auth_user} added #{params[:p1]} route for #{params[:p2]}/#{params[:p3]}"
+      body({akamai: akamai, blackhole: blackhole, timestamp: Time.now.strftime("%Y%m%d-%H%M%S"), user: auth_user}.to_json)
+    end
+
+    get "/ddos/mitigation/:p1/remove/:p2/:p3/?" do
+      auth_user = get_headers['X-Forwarded-User']
+      unless settings.authorized.include?(request.ip) && settings.allow_cmds.include?(params[:p1]) && settings.allow_users.include?(auth_user)
+        status 403
+        return body('Not authorized')
+      end
+
+      cmd = `/usr/local/sbin/#{params[:p1]} --del #{params[:p2]}/#{params[:p3]}`
+      blackhole, akamai = mitigation_status
+      puts "#{Time.now.strftime("%Y%m%d-%H%M%S")} - #{auth_user} - removed #{params[:p1]} route for #{params[:p2]}/#{params[:p3]}"
+      body({akamai: akamai, blackhole: blackhole, timestamp: Time.now.strftime("%Y%m%d-%H%M%S"), user: auth_user}.to_json)
+    end
+
 
   end
 

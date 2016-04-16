@@ -7,12 +7,16 @@ module AppConfig
     @influxdb = ENV['NETHEALER_INFLUXDB']
     @username = ENV['NETHEALER_USERNAME']
     @password = ENV['NETHEALER_PASSWORD']
+    @whitelist = ENV['NETHEALER_WHITELIST'].nil? ? '' : ENV['NETHEALER_WHITELIST'].split(',')
+    @allow_cmds = ENV['NETHEALER_ALLOW_CMDS'].nil? ? '' : ENV['NETHEALER_ALLOW_CMDS'].split(',')
+    @allow_users = ENV['NETHEALER_ALLOW_USERS'].nil? ? '' : ENV['NETHEALER_ALLOW_USERS'].split(',')
+    @netportal = ENV['NETPORTAL_URL']
 
     %i[@server].each do |config_var|
       raise "NETHEALER misconfiguration - no #{config_var}" if instance_variable_get(config_var).nil?
     end
     class << self
-      attr_reader :server, :influxdb, :username, :password
+      attr_reader :server, :influxdb, :username, :password, :whitelist, :allow_cmds, :allow_users, :netportal
     end
   end
 
@@ -53,14 +57,13 @@ module AppConfig
 
 
   class FLOWDOCK
-    @tokens = ENV['FLOWDOCK_TOKENS']
+    @tokens = ENV['FLOWDOCK_TOKENS'].nil? ? nil : ENV['FLOWDOCK_TOKENS'].split(',')
+    
     
     class << self
       attr_reader :tokens
     end
   end
-end
-
 
   class GRAFANA
     @url = ENV['GRAFANA_URL']
@@ -69,3 +72,5 @@ end
       attr_reader :url
     end
   end
+
+end

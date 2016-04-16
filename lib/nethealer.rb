@@ -178,3 +178,15 @@ def site_status
     return { status: 'critical', target: critical, timestamp: Time.now.strftime("%Y%m%d-%H%M%S") }
   end
 end
+
+def mitigation_status
+  tmp = `/usr/local/sbin/blackhole`
+  blackhole = tmp.nil? ? nil : tmp.split("\n")
+  blackhole.map! {|item| item.split(' ')[1]} unless blackhole.nil?
+  
+  tmp = `/usr/local/sbin/akamai`
+  akamai = tmp.nil? ? nil : tmp.split("\n")
+  akamai.map! {|item| item.split(' ')[1]} unless akamai.nil?
+  return blackhole, akamai
+end
+
