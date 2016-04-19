@@ -5,30 +5,29 @@ It provides an API abstraction via https. see examples below
 
 ## NET HEALER Stages example
 - cleared - no Attack Reports received for any /32 target
-- warning - less than 3 Attack Reports received for /32 target(s)
-- critical - more than [x] Attack Reports received for /32 target(s)
-- under_attack - more than critical :) it means FNM + other algorithms detected an ongoing attack
+- warning - less or equal to 2 Attack Reports received for /32 target(s)
+- critical - more than 2 Attack Reports received for /32 target(s)
+- under_attack - FastNetMon + anomaly detected
 
 Each 1 FNM /32 ban = 1 NET HEALER Attack Report<br>
 Lower the FNM ban time, faster NET HEALER will advance in stages (thresholds can be customized)<br>
-Start with FNM ban time: 30 seconds (NET HEALER will converge from cleared to warning after 90 seconds)
+Start with FNM ban time: 45 seconds (NET HEALER will converge from cleared to warning after 90 seconds)
 
 ## Actions
 Working:
- - Grafana vertical bars markdown including state/target (OK)
+ - Grafana vertical bars markdown including state/target
  - Email
  - Pagerduty
  - Flowdock messages
-
-WIP:
- - BGP blackhole or scrubbing center routing
+ - BGP announces (BIRD + kernel blackhole tables)
 
 ## Requirements
 - FastNetMon: a super cool tool written by Pavel Odintsov - https://github.com/FastVPSEestiOu/fastnetmon
-- Morgoth (https://github.com/nathanielc/morgoth)
 - Redis (https://github.com/antirez/redis)
+## Nice to have
 - InfluxDB (https://github.com/influxdb/influxdb)
 - Grafana (https://github.com/grafana/grafana)
+- Morgoth (https://github.com/nathanielc/morgoth)
 
 ##Installation
 0. FastNetMon (FNM) should be configured to use:
@@ -97,13 +96,6 @@ WIP:
         }
     }
 }
-```
-
-### GET /healer/v1/ddos/reports/capture
-=> query current DDoS reports + packet capture
-```json
-[output supressed]
-```
 
 ### GET /healer/v1/ddos/brief 
 => query /32 targets + amount of current Attack Reports
