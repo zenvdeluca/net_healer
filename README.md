@@ -1,10 +1,10 @@
 # NET HEALER 
 
-NET HEALER receive DDoS Attack reports from FastNetMon collectors allowing different triggering on a per stage (warning/critical/under_attack) based actions.<br>
+NET HEALER receive DDoS Attack reports from FastNetMon collectors allowing different triggering on a per stage based actions.<br>
 Allows integration with non gaussian algorithms for anomaly detection.<br>
 Provides a RESTful like API
 
-## NET HEALER Stages example
+## STAGES
 - clear - no Attack Reports received for any /32 target
 - warning - less or equal to 2 Attack Reports received for /32 target(s)
 - critical - more than 2 Attack Reports received for /32 target(s)
@@ -14,17 +14,17 @@ Each 1 FNM /32 ban = 1 NET HEALER Attack Report<br>
 Lower the FNM ban time, faster NET HEALER will advance in stages (thresholds can be customized)<br>
 Start with FNM ban time: 45 seconds (NET HEALER will converge from cleared to warning after 90 seconds)
 
-## Actions
-Working:
- - Grafana vertical bars markdown including state/target
+## ACTIONS
+ - Grafana vertical bars markdown including stage/target(s)
  - Email
  - Pagerduty
- - Flowdock messages
+ - Flowdock chat messages
  - BGP announces (BIRD + kernel blackhole tables)
 
 ## Requirements
 - FastNetMon: a super cool tool written by Pavel Odintsov - https://github.com/FastVPSEestiOu/fastnetmon
 - Redis (https://github.com/antirez/redis)
+
 ## Nice to have
 - InfluxDB (https://github.com/influxdb/influxdb)
 - Grafana (https://github.com/grafana/grafana)
