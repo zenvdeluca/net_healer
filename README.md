@@ -1,6 +1,6 @@
 # NET HEALER 
 
-NET HEALER receive DDoS Attack reports from FastNetMon collectors allowing different triggering on a per stage based actions.<br>
+NET HEALER receive DDoS Attack reports from FastNetMon collectors allowing custom triggers on a per stage based actions.<br>
 Allows integration with non gaussian algorithms for anomaly detection.<br>
 Provides a RESTful like API
 
