@@ -22,7 +22,7 @@ Start with FNM ban time: 45 seconds (NET HEALER will converge from cleared to wa
  - BGP announces (BIRD + kernel blackhole tables)
 
 ## Requirements
-- FastNetMon: a super cool tool written by Pavel Odintsov - https://github.com/FastVPSEestiOu/fastnetmon
+- FastNetMon: a super cool tool written by Pavel Odintsov - https://github.com/pavel-odintsov/fastnetmon
 - Redis (https://github.com/antirez/redis)
 
 ## Nice to have
