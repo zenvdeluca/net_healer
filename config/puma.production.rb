@@ -41,7 +41,7 @@ pidfile "#{root}/puma.pid"
 #
 # stdout_redirect '/u/apps/lolcat/log/stdout', '/u/apps/lolcat/log/stderr'
 # stdout_redirect '/u/apps/lolcat/log/stdout', '/u/apps/lolcat/log/stderr', true
-
+stdout_redirect "#{root}/log/net_kadosh.log", "#{root}/log/net_kadosh.stderr.log", true
 # Disable request logging.
 #
 # The default is "false".

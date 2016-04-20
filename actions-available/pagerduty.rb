@@ -13,7 +13,7 @@ class Actions
     if (Time.now - $lastpd) > 300 || (info != @@lastpdinfo)
       $lastpd = Time.now
       @@lastpdinfo = info
-      incident = @@pagerduty.trigger("#{@@site} - DDoS #{info}") 
+      incident = @@pagerduty.trigger("#{@@site.upcase} - DDoS #{info}") 
       puts "|Pagerduty_Sent| - #{Time.now}"
       return 'sent'
     end
@@ -27,7 +27,7 @@ class Actions
     if (Time.now - $lastpd) > 300 || (info != @@lastpdinfo)
       $lastpd = Time.now
       @@lastpdinfo = info
-      incident = @@pagerduty.trigger("#{@@site} - DDoS #{info}") 
+      incident = @@pagerduty.trigger("#{@@site.upcase} - DDoS #{info}") 
       puts "|Pagerduty_Sent| - #{Time.now}"
       return 'sent'
     end
