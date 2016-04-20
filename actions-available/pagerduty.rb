@@ -1,18 +1,17 @@
 require 'pagerduty'
 
 $lastpd = Time.now - 301
-$lastinfo = ''
 
 class Actions
-
+  @@site = AppConfig::NOTIFICATIONS.location.upcase
   @@pagerduty = Pagerduty.new(AppConfig::PAGERDUTY.key)
-
+  
   def warning_pagerduty(current)
     info = current[:status].upcase
     current[:target].map {|k,v| info = info + " #{k} "}
-    if (Time.now - $lastpd) > 300 || (info != $lastinfo)
+    if (Time.now - $lastpd) > 300 || (info != @@lastpdinfo)
       $lastpd = Time.now
-      $lastinfo = info
+      @@lastpdinfo = info
       incident = @@pagerduty.trigger("#{@@site} - DDoS #{info}") 
       puts "|Pagerduty_Sent| - #{Time.now}"
       return 'sent'
@@ -24,9 +23,9 @@ class Actions
   def critical_pagerduty(current)
     info = current[:status].upcase
     current[:target].map {|k,v| info = info + " #{k} "}
-    if (Time.now - $lastpd) > 300 || (info != $lastinfo)
+    if (Time.now - $lastpd) > 300
       $lastpd = Time.now
-      $lastinfo = info
+      @@lastpdinfo = info
       incident = @@pagerduty.trigger("#{@@site} - DDoS #{info}") 
       puts "|Pagerduty_Sent| - #{Time.now}"
       return 'sent'

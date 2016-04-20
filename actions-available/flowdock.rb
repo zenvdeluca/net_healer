@@ -13,7 +13,7 @@ class Actions
   @@flows_token = AppConfig::FLOWDOCK.tokens
   @@site = AppConfig::NOTIFICATIONS.location.downcase
   @@grafana = AppConfig::GRAFANA.url
-  @lastinfo = ''
+  @@lastinfo = ''
 
 
   def warning_flowdock(current)
