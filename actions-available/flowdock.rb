@@ -15,14 +15,14 @@ class Actions
   @@grafana = AppConfig::GRAFANA.url
 
   def warning_flowdock(current)
-    info = '' ; @@lastinfo ||= 'none'
-    current[:target].map {|k,v| info = "|#{k}"}
-    if (Time.now - $lastpd) > 300 || (info != @@lastinfo)
+    winfo = '' ; @@lastwinfo ||= 'none'
+    current[:target].map {|k,v| winfo = "|#{k}"}
+    if (Time.now - $lastpd) > 300 || (winfo != @@lastwinfo)
       $lastpd = Time.now
-      @@lastinfo = info
+      @@lastwinfo = winfo
       @@flows_token.each do |flow_token|
         flow = Flowdock::Flow.new(:api_token => flow_token, :external_user_name => "NetHealer")
-        flow.push_to_chat(:content => ":warning: [#{@@site.upcase}] - Possible DDoS Alert - target: #{info} \n- Graphs => #{@@grafana}/dashboard/db/#{@@site}-bps-pps-flows\n@team", :tags => ["DDoS","Warning"])
+        flow.push_to_chat(:content => ":warning: [#{@@site.upcase}] - Possible DDoS Alert - target: #{winfo} \n- Graphs => #{@@grafana}/dashboard/db/#{@@site}-bps-pps-flows\n@team", :tags => ["DDoS","Warning"])
         if @@ping_enabled
           ping = `ping -c #{@@ping_count} -W #{@@ping_timeout} #{@@ping_target} | grep -E "packet loss|min/avg/max"`.split("\n")
           loss = ping[0].split(', ')[2]
@@ -38,14 +38,14 @@ class Actions
   end
 
   def critical_flowdock(current)
-    info = '' ; @@lastinfo ||= 'none'
-    current[:target].map {|k,v| info = "|#{k}"}
-    if (Time.now - $lastpd) > 300 || (info != @@lastinfo)
+    cinfo = '' ; @@lastcinfo ||= 'none'
+    current[:target].map {|k,v| cinfo = "|#{k}"}
+    if (Time.now - $lastpd) > 300 || (cinfo != @@lastcinfo)
       $lastpd = Time.now
-      @@lastinfo = info
+      @@lastcinfo = cinfo
       @@flows_token.each do |flow_token|
         flow = Flowdock::Flow.new(:api_token => flow_token, :external_user_name => "NetHealer")
-        flow.push_to_chat(:content => ":warning: [#{@@site.upcase}] - Possible DDoS Alert - target: #{info} \n- Graphs => #{@@grafana}/dashboard/db/#{@@site}-bps-pps-flows\n@team", :tags => ["DDoS","Warning"])
+        flow.push_to_chat(:content => ":warning: [#{@@site.upcase}] - Possible DDoS Alert - target: #{cinfo} \n- Graphs => #{@@grafana}/dashboard/db/#{@@site}-bps-pps-flows\n@team", :tags => ["DDoS","Warning"])
         if @@ping_enabled
           ping = `ping -c #{@@ping_count} -W #{@@ping_timeout} #{@@ping_target} | grep -E "packet loss|min/avg/max"`.split("\n")
           loss = ping[0].split(', ')[2]
