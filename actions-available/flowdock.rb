@@ -22,7 +22,7 @@ class Actions
       @@lastwinfo = winfo
       @@flows_token.each do |flow_token|
         flow = Flowdock::Flow.new(:api_token => flow_token, :external_user_name => "NetHealer")
-        flow.push_to_chat(:content => ":warning: [#{@@site.upcase}] - Possible DDoS Alert - target: #{winfo} \n- Graphs => #{@@grafana}/dashboard/db/#{@@site}-bps-pps-flows\n@team", :tags => ["DDoS","Warning"])
+        flow.push_to_chat(:content => ":warning: [#{@@site.upcase}] - POSSIBLE DDoS ALERT - target: #{winfo} \n- Graphs => #{@@grafana}/dashboard/db/#{@@site}-bps-pps-flows\n@team", :tags => ["DDoS","Warning"])
         if @@ping_enabled
           ping = `ping -c #{@@ping_count} -W #{@@ping_timeout} #{@@ping_target} | grep -E "packet loss|min/avg/max"`.split("\n")
           loss = ping[0].split(', ')[2]
@@ -45,7 +45,7 @@ class Actions
       @@lastcinfo = cinfo
       @@flows_token.each do |flow_token|
         flow = Flowdock::Flow.new(:api_token => flow_token, :external_user_name => "NetHealer")
-        flow.push_to_chat(:content => ":warning: [#{@@site.upcase}] - Possible DDoS Alert - target: #{cinfo} \n- Graphs => #{@@grafana}/dashboard/db/#{@@site}-bps-pps-flows\n@team", :tags => ["DDoS","Warning"])
+        flow.push_to_chat(:content => ":warning: [#{@@site.upcase}] - CRITICAL DDOS ALERT - target: #{cinfo} \n- Graphs => #{@@grafana}/dashboard/db/#{@@site}-bps-pps-flows\n@team", :tags => ["DDoS","Critical"])
         if @@ping_enabled
           ping = `ping -c #{@@ping_count} -W #{@@ping_timeout} #{@@ping_target} | grep -E "packet loss|min/avg/max"`.split("\n")
           loss = ping[0].split(', ')[2]
