@@ -15,7 +15,7 @@ class Actions
   @@grafana = AppConfig::GRAFANA.url
 
   def warning_flowdock(current)
-    info = ''
+    info = '' ; @@lastinfo ||= ''
     current[:target].map {|k,v| info = "|#{k}"}
     if (Time.now - $lastpd) > 300 || (info != @@lastinfo)
       $lastpd = Time.now
@@ -38,7 +38,7 @@ class Actions
   end
 
   def critical_flowdock(current)
-    info = ''
+    info = '' ; @@lastinfo ||= ''
     current[:target].map {|k,v| info = "|#{k}"}
     if (Time.now - $lastpd) > 300 || (info != @@lastinfo)
       $lastpd = Time.now
