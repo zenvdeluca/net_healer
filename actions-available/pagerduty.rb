@@ -11,7 +11,7 @@ class Actions
   def warning_pagerduty(current)
     info = current[:status].upcase
     current[:target].map {|k,v| info = info + " #{k} "}
-    if (Time.now - $lastpd) > 300 || (info != @@lastpdinfo)
+    if (Time.now - $lastpd) > 300 || (info != $lastpdinfo)
       $lastpd = Time.now
       $lastpdinfo = info
       incident = @@pagerduty.trigger("#{@@site.upcase} - DDoS #{info}") 
@@ -25,7 +25,7 @@ class Actions
   def critical_pagerduty(current)
     info = current[:status].upcase
     current[:target].map {|k,v| info = info + " #{k} "}
-    if (Time.now - $lastpd) > 300 || (info != @@lastpdinfo)
+    if (Time.now - $lastpd) > 300 || (info != $lastpdinfo)
       $lastpd = Time.now
       $lastpdinfo = info
       incident = @@pagerduty.trigger("#{@@site.upcase} - DDoS #{info}") 
