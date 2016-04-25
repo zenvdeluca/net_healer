@@ -1,0 +1,3 @@
+#!/bin/bash
+for i in $(ps ax | grep script/poole[r] | awk '{print $1}') ; do kill -9 $i ; done
+for i in $(ps ax | grep puma | grep net_healer| awk '{print $1}') ; do kill -9 $i stop ; done

@@ -1,6 +1,7 @@
 require 'pagerduty'
 
 $lastpd = Time.now - 301
+$lastpdinfo = ''
 
 class Actions
   @@pagerduty_enabled = true
@@ -12,7 +13,7 @@ class Actions
     current[:target].map {|k,v| info = info + " #{k} "}
     if (Time.now - $lastpd) > 300 || (info != @@lastpdinfo)
       $lastpd = Time.now
-      @@lastpdinfo = info
+      $lastpdinfo = info
       incident = @@pagerduty.trigger("#{@@site.upcase} - DDoS #{info}") 
       puts "|Pagerduty_Sent| - #{Time.now}"
       return 'sent'
@@ -26,7 +27,7 @@ class Actions
     current[:target].map {|k,v| info = info + " #{k} "}
     if (Time.now - $lastpd) > 300 || (info != @@lastpdinfo)
       $lastpd = Time.now
-      @@lastpdinfo = info
+      $lastpdinfo = info
       incident = @@pagerduty.trigger("#{@@site.upcase} - DDoS #{info}") 
       puts "|Pagerduty_Sent| - #{Time.now}"
       return 'sent'
